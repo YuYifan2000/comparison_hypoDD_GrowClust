@@ -77,6 +77,7 @@ for ii in range(ny):
 vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
 p_vel_structure = vxyz.flatten(order='F')
 
+plot_velocity(vel3d)
 
 f = open('./vjma2001', 'r')
 tmp = f.readlines()
@@ -96,7 +97,7 @@ s_vel_structure = vxyz.flatten(order='F')
 
 # set up stations
 
-stations = [[100,100], [90,100], [110,100], [100,90], [100, 110], [80,100], [120,100], [100,120], [100,80], [60,60]]
+stations = [[100,100], [50,100], [150,100], [100,50], [100, 150], [50,50], [150,150], [150,50], [30,130], [60,60]]
 
 # set up sources
 # fit a line which goes from [100,50,12] to [120,80,14]
@@ -162,6 +163,6 @@ f.close()
 f2.close()
 np.save('tt_P',p_time_table)
 np.save('tt_S',s_time_table)
-# fast marching for travel time
-#t = fmm.eikonal(vel_structure,xyz=sources[0],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2)
-#time = t.reshape(nx,ny,nz,order='F')[:,:,0]
+
+
+# 
