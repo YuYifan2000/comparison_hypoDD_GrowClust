@@ -1,0 +1,7 @@
+*.reloc*
+*.txt
+*.npy
+*.pha
+hypoDD.*
+dt.*
+*.log

@@ -1,0 +1,80 @@
+* RELOC.INP:
+*--- input file selection
+* cross correlation diff times:
+dt.cc
+*
+* catalog P diff times:
+dt.ct
+*
+* event file:
+event.sel
+*
+* station file:
+station.dat
+*
+*--- output file selection
+* original locations:
+hypoDD.loc
+* relocations:
+hypoDD.reloc
+* station information:
+hypoDD.sta
+* residual information:
+hypoDD.res
+* source paramater information:
+hypoDD.src
+*
+*--- data type selection: 
+* IDAT:  0 = synthetics; 1= cross corr; 2= catalog; 3= cross & cat 
+* IPHA: 1= P; 2= S; 3= P&S
+* DIST:max dist [km] between cluster centroid and station 
+* IDAT   IPHA   DIST
+    3     1     100
+*
+*--- event clustering:
+* OBSCC:    min # of obs/pair for crosstime data (0= no clustering)
+* OBSCT:    min # of obs/pair for network data (0= no clustering)
+* OBSCC  OBSCT    
+    2     6   
+*
+*--- solution control:
+* ISTART:  	1 = from single source; 2 = from network sources
+* ISOLV:	1 = SVD, 2=lsqr
+* NSET:      	number of sets of iteration with specifications following
+*  ISTART  ISOLV  NSET
+    2        2      3
+*
+*--- data weighting and re-weighting: 
+* NITER: 		last iteration to used the following weights
+* WTCCP, WTCCS:		weight cross P, S 
+* WTCTP, WTCTS:		weight catalog P, S 
+* WRCC, WRCT:		residual threshold in sec for cross, catalog data 
+* WDCC, WDCT:  		max dist [km] between cross, catalog linked pairs
+* DAMP:    		damping (for lsqr only) 
+*       ---  CROSS DATA ----- ----CATALOG DATA ----
+* NITER WTCCP WTCCS WRCC WDCC WTCTP WTCTS WRCT WDCT DAMP
+    4    -9  -9  -9  -9    1  0.8  -9  -9  20
+    4    -9  -9  -9  -9    1  0.8  -9  -9  20
+    4    1.0   0.8   -9  -9  0.01  0.01  -9  -9  20
+*    3    1.0   0.5   6   2  0.01  0.01  6  2  60
+*   3    1.0   0.8   6  0.5  -9  -9  -9  -9  70
+*
+*--- 1D model:
+* NLAY:		number of model layers  
+*   3     -9   -9   -9    -9   1    0.8     3    2  70 
+* RATIO:	vp/vs ratio 
+* TOP:		depths of top of layer (km) 
+* VEL: 		layer velocities (km/s)
+* NLAY  RATIO 
+   13     1.71
+* TOP 
+0.0 2.5 5.0 7.5 10.0 12.5 15.0 17.5 20.0 22.5 25.0 27.5 30.0
+* VEL
+4.80 5.45 5.82 5.92 6.02 6.12 6.22 6.33 6.45 6.57 6.70 6.84 6.98
+*
+*--- event selection:
+* CID: 	cluster to be relocated (0 = all)
+* ID:	cuspids of event to be relocated (8 per line)
+* CID    
+    0      
+* ID
