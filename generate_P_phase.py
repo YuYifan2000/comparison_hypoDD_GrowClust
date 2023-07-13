@@ -24,6 +24,32 @@ def get_point_at_distance(lat1, lon1, d, bearing, R=6371):
     )
     return (degrees(lat2), degrees(lon2),)
 
+def plot_source_station(stations,sources):
+	fig = plt.figure(figsize=[12,6])
+	ax = fig.add_subplot(projection='3d')
+	ax.scatter(stations[:,0], stations[:,1], zs=0, zdir='z', label='station', marker="^")
+	ax.scatter(sources[:,0], sources[:,1], sources[:,2], zdir='z', label='sources', marker = "*")
+	ax.legend()
+	ax.set_xlabel('Latitude')
+	ax.set_ylabel('Longitude')
+	ax.set_zlabel('Z')
+	ax.invert_zaxis()
+	ax.view_init(elev=20., azim=-35, roll=0)
+	plt.savefig('source_station.png', dpi=500)
+	#plt.show()
+	plt.close()
+
+def plot_velocity(vel3d):
+	fig = plt.figure()
+	ax = fig.add_subplot(121)
+	ax.set_title('Depth at shallow, heterogeneity')
+	ax.imshow(vel3d[:,:,0], cmap='jet')
+	ax = fig.add_subplot(122)
+	ax.set_title('Depth at deeper, constant')
+	ax.imshow(vel3d[:,:,10], cmap='jet')
+	plt.savefig('velocity.png', dpi=500)
+	plt.close()
+
 # set up basic parameters
 
 nz = 61
@@ -37,10 +63,10 @@ print(f'Range: in x direction {(nx-1)*dx} in y direction {(ny-1)*dy} in z direct
 # set up velocity structure
 f = open('./vjma2001', 'r')
 tmp = f.readlines()
+f.close()
 v = []
 for i in tmp[:nz]:
 	v.append(float(i.split()[0]))
-
 v = np.array(v)
 v = np.expand_dims(v,1)
 h = np.ones([1,nx])
@@ -48,33 +74,47 @@ vel = np.multiply(v,h,dtype='float32') #z,x
 vel3d=np.zeros([nz,nx,ny],dtype='float32')
 for ii in range(ny):
 	vel3d[:,:,ii]=vel
-
-# plt.figure()
-# plt.imshow(vel3d[:,:,0])
-# plt.jet();plt.show()
 vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
-vel_structure = vxyz.flatten(order='F')
+p_vel_structure = vxyz.flatten(order='F')
+
+
+f = open('./vjma2001', 'r')
+tmp = f.readlines()
+f.close()
+v = []
+for i in tmp[:nz]:
+	v.append(float(i.split()[1]))
+v = np.array(v)
+v = np.expand_dims(v,1)
+h = np.ones([1,nx])
+vel = np.multiply(v,h,dtype='float32') #z,x
+vel3d=np.zeros([nz,nx,ny],dtype='float32')
+for ii in range(ny):
+	vel3d[:,:,ii]=vel
+vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
+s_vel_structure = vxyz.flatten(order='F')
 
 # set up stations
 
 stations = [[100,100], [90,100], [110,100], [100,90], [100, 110], [80,100], [120,100], [100,120], [100,80], [60,60]]
 
 # set up sources
-# fit a line which goes from [20,10,12] to [40,10,14]
+# fit a line which goes from [100,50,12] to [120,80,14]
 np.random.seed(0)
-x = 20 + 20*np.random.rand(50,1)
-y = np.ones([50,1]) * 10.
-z = 12 + 2*np.random.rand(50,1) + np.random.rand(50,1)/5
+a = np.random.rand(50,1)
+x = 100 + 20*a
+y = 50 + 30*a
+z = 12 + 2*a
 sources = np.hstack([x,y,z])
 
 
 # change the sources to earth coordinates
 o_lat = 30
-o_lon = 120
+o_lon = 10
 o_sources = []
 for source in sources:
 	lat,lon = get_point_at_distance(o_lat, o_lon, np.sqrt((source[0]*dx)**2+(source[1]*dy)**2), np.arctan(source[0]*dx/(source[1]*dy)))
-	o_sources.append([lat,lon])
+	o_sources.append([lat,lon, source[2]])
 
 # change the stations to earth coordinates
 o_stations = []
@@ -89,27 +129,39 @@ for i in range(0,len(o_stations)):
     f.write(f'ST{i} {o_stations[i][0]:5.3f} {o_stations[i][1]:6.3f}\n')
 f.close()
 
+np.save('sta', np.array(o_stations))
+np.save('source', np.array(o_sources))
+
+plot_source_station(np.array(o_stations), np.array(o_sources))
+
 # write pha file
 # save the travel time at the same time for the future reference for dt.cc
 
-time_table = np.zeros([len(o_sources), len(o_stations)])
+p_time_table = np.zeros([len(o_sources), len(o_stations)])
+s_time_table = np.zeros([len(o_sources), len(o_stations)])
 f = open('test.pha', 'w+')
 f2 = open('benchmark_station.txt', 'w')
 
 for i in range(0, len(o_sources)):
+	print(i)
 	random_lat = o_sources[i][0]+np.random.rand(1)[0]/10.
 	random_lon = o_sources[i][1]+np.random.rand(1)[0]/10.
 	f.write(f"# 2000 12 13 15 00 23.48 {random_lat:6.3f} {random_lon:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
 	f2.write(f"# 2000 12 13 15 00 23.48 {o_sources[i][0]:5.3f} {o_sources[i][1]:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
 	for j in range(0, len(stations)):
-		t = fmm.eikonal(vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')[:,:,0]
+		t = fmm.eikonal(p_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')[:,:,0]
 		travel_time = t[stations[j][0]][stations[j][1]]
-		time_table[i][j] = travel_time
-		print(j)
+		p_time_table[i][j] = travel_time
 		f.write(f"ST{j}    {travel_time:4.2f}0  1.000    P \n")
+
+		t = fmm.eikonal(s_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')[:,:,0]
+		travel_time = t[stations[j][0]][stations[j][1]]
+		s_time_table[i][j] = travel_time
+		f.write(f"ST{j}    {travel_time:4.2f}0  1.000    S \n")
 f.close()
 f2.close()
-np.save('tt_P',time_table)
+np.save('tt_P',p_time_table)
+np.save('tt_S',s_time_table)
 # fast marching for travel time
 #t = fmm.eikonal(vel_structure,xyz=sources[0],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2)
 #time = t.reshape(nx,ny,nz,order='F')[:,:,0]
