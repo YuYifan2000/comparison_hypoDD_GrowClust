@@ -4,6 +4,7 @@ nz=1600;
 Vp=zeros(nx,nz)+6.0;
 Vp = Vp';
 dV = generate_scatter_rand2d(nx,nz,.005,.5,.1,.107,.04);
+
 % 
 % % Vp = Vp'.*(1 + dV);
 Vp = Vp + dV;
@@ -28,7 +29,7 @@ fid=fopen(strcat(id,'.den'),'wb');
 fwrite(fid,Den,'single');
 fclose(fid);
 
-
+figure()
 imagesc(Vp);
 
 
@@ -60,7 +61,8 @@ P_K = (4*pi*gamma(k+1)*(ax.*az))./(gamma(abs(k)).*(1+K_sq).^(k+1));
 %P_K = (ax^2+az^2)./((1+K_sq).^(3/2));
 %P_K = (ax.*az)./((1+K_sq).^(3/2));
 %P_K = (ax.*az)./(1+K_sq);
-
+figure()
+imagesc(P_K);
 
 Y2 = Y2 .*sqrt(P_K);
 
