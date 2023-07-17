@@ -1,0 +1,85 @@
+ ************************ Input files ************************
+      control file:   ssprings.inp
+        event list:   IN/evlist.txt
+      station list:   IN/stlist.txt
+      xcordat file:   IN/dt.cc
+      velocity mdl:   IN/vzmodel.txt
+ ******************** Travel Time Tables *********************
+           P-phase:   TT/tt.pg
+           S-phase:   TT/tt.sg
+ *********************** Output files ************************
+      catalog file:   OUT/out.growclust_cat
+      cluster file:   OUT/out.growclust_clust
+          log file:   OUT/out.growclust_log
+    bootstrap file:   OUT/out.growclust_boot
+ **************** GROWCLUST Run Parameters *******************
+  (min rxcor value for evpair similarity coeff.): rmin =  0.60
+  (max sta. dist for evpair similarity coeff.): delmax =  80.0
+           (max rms residual to join clusters): rmsmax =  0.20
+        (num. bootstrap uncertainty iterations): nboot =     0
+ **************** Auxiliary Run Parameters *******************
+                     max catalog dist to join clusters:   5.00
+                   max relocated dist to join clusters:   3.00
+             min number in cluster to apply shift test:      1
+               max permitted horizontal cluster shifts:   2.00
+                 max permitted vertical cluster shifts:   2.00
+         max median absolute residual to join clusters:   0.05
+ *************************************************************
+  
+ *************************************   Cluster GrowLog   ****************************************
+  
+   CID1   CID2    NB1   NB2   CID    NB NPR NDT   dLATC     dLONC     dDEPC     dDISTC   RMSC  RMEDC
+      4     12     1     1      4     2  1  18   0.00462  -0.00146   0.29601   4.45719   0.05   0.04
+     23     33     1     1     23     2  1  18   0.00039  -0.00057  -0.16229   2.35787   0.02   0.01
+     25     76     1     1     25     2  1  18   0.02253  -0.00566   1.47255   2.49634   0.15   0.01
+     62     68     1     1     62     2  1  18   0.00050  -0.00132  -0.42689   3.99067   0.06   0.04
+     64     93     1     1     64     2  1  18   0.00029  -0.00053  -0.26507   3.96658   0.03   0.02
+      4     29     2     1      4     3  2  36   0.00493  -0.00220   0.43254   0.98165   0.07   0.02
+     62     70     2     1     62     3  1  18   0.00026  -0.00081  -0.22923   0.52837   0.00   0.00
+     30     42     1     1     30     2  1  18  -0.00686   0.00275  -0.68748   2.57831   0.12   0.04
+     78     80     1     1     78     2  1  18   0.00000  -0.00017  -0.05389   2.08602   0.01   0.01
+      7     30     1     2      7     3  2  36   0.00351  -0.00140   0.33403   2.61215   0.08   0.00
+     15     16     1     1     15     2  1  18  -0.00341   0.00264   0.11469   1.94078   0.04   0.02
+     15     98     2     1     15     3  2  36   0.01466  -0.00539  -0.01912   2.95542   0.11   0.02
+     79     95     1     1     79     2  1  16   0.00033  -0.00095  -0.35370   0.82973   0.03   0.02
+     77     79     1     2     77     3  2  32  -0.00049   0.00153   0.55942   2.63205   0.05   0.03
+     59     72     1     1     59     2  1  16  -0.00010   0.00037   0.15194   3.19731   0.01   0.01
+     60     77     1     3     60     4  2  24  -0.00017   0.00114   0.96929   1.40903   0.17   0.02
+     60     65     4     1     60     5  3  32   0.00005  -0.00087  -0.70683   2.55242   0.20   0.02
+     36     37     1     1     36     2  1  16   0.00241  -0.00161   0.30626   3.48033   0.02   0.00
+     40     45     1     1     40     2  1  16   0.00308  -0.00296   0.16101   2.48971   0.03   0.03
+     41     50     1     1     41     2  1  16   0.00000   0.00057   0.02741   2.18223   0.01   0.01
+     51     85     1     1     51     2  1  14  -0.00012  -0.00024  -0.28704   3.48740   0.02   0.01
+     19     32     1     1     19     2  1  12   0.00300   0.00000   0.91158   2.61712   0.02   0.02
+      2     43     1     1      2     2  1  12   0.00773  -0.00201   1.10066   4.59578   0.07   0.04
+     57     92     1     1     57     2  1  12   0.00088   0.00106   1.43102   2.01183   0.06   0.04
+     11     19     1     2     11     3  2  22   0.00618  -0.00195   0.81769   2.15772   0.05   0.04
+      3     26     1     1      3     2  1  12  -0.01117   0.00449  -1.67802   4.24523   0.08   0.04
+      8     20     1     1      8     2  1  10   0.00764  -0.00187  -0.22630   1.23876   0.05   0.03
+      8     18     2     1      8     3  2  17   0.01016  -0.00946  -2.04853   0.78260   0.08   0.02
+     28     39     1     1     28     2  1   8   0.00005  -0.00024  -0.10509   2.67041   0.00   0.00
+      9     21     1     1      9     2  1   8  -0.00416   0.00287   0.93819   1.64715   0.02   0.00
+     22     24     1     1     22     2  1   8   0.00336  -0.00433  -0.42369   3.34161   0.01   0.00
+     71     73     1     1     71     2  1   8   0.00010   0.00000   0.04116   3.09572   0.00   0.00
+ **************************************************************************************************
+  
+ ************************************  GROWCLUST Run Summary  *************************************
+  
+                             Number of catalog events:        100
+                           Number of relocated events:         55
+                          Number of input event pairs:        903
+                           Number of event pairs used:         43
+                Number of xcor data used (total, P+S):        615
+                   Number of xcor data used (P-phase):        320
+             RMS differential time residual (P-phase):     0.0463
+   Mean (signed) differential time residual (P-phase):     0.0196
+                   Number of xcor data used (S-phase):        295
+             RMS differential time residual (S-phase):     0.1251
+   Mean (signed) differential time residual (S-phase):     0.0471
+  
+                Number of clusters with >=   2 events:        23
+                Number of clusters with >=   5 events:         1
+                Number of clusters with >=  10 events:         0
+                Number of clusters with >=  20 events:         0
+                Number of clusters with >=  50 events:         0
+                Number of clusters with >= 100 events:         0

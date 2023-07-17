@@ -2,7 +2,7 @@ import pyekfmm as fmm
 import numpy as np
 import matplotlib.pyplot as plt
 
-from scipy.fft import fft2, fftfreq, ifft2
+from scipy.fft import fft2, fftfreq, ifft2, fftn, ifftn
 from scipy.special import gamma
 from math import asin, atan2, cos, degrees, radians, sin
 
@@ -33,42 +33,16 @@ def plot_source_station(stations,sources):
 	ax.scatter(sources[:,0], sources[:,1], sources[:,2], zdir='z', label='sources', marker = "*")
 	ax.legend()
 	ax.set_xlabel('Latitude')
+	ax.set_xlim([30, 31.2])
 	ax.set_ylabel('Longitude')
+	ax.set_ylim([10, 11.2])
 	ax.set_zlabel('Z')
+	ax.set_zlim([0, 30])
 	ax.invert_zaxis()
 	ax.view_init(elev=20., azim=-35, roll=0)
 	plt.savefig('source_station.png', dpi=500)
 	#plt.show()
 	plt.close()
-
-def scatter_velocity_perturbation(M, N, delta, ax, az, sigma, k):
-	# double the size
-	M = 2 * M
-	N = 2 * N
-	Vs = 2 * np.random.rand(M, N)-1
-
-	# 2D FFT
-	Y2 = fft2(Vs)
-	# define the wavenumber scale in X and Z
-	kx = fftfreq(M, delta)*2*np.pi
-	kz = fftfreq(N, delta)*2*np.pi
-	kx_, kz_ = np.meshgrid(kz, kx)
-
-	K_sq = kx_**2 * ax**2 + kz_**2 * az**2
-	# Von Karman distribution
-	P_K = (4 * np.pi * gamma(k+1) * (ax*az)) / (gamma(abs(k)) * np.power(1+K_sq, k+1))
-	Y2 = Y2 * np.sqrt(P_K)
-
-	# ifft
-	newV = ifft2(Y2)
-	test = np.real(newV[:M, :N])
-	test = sigma / np.std(test) * test
-	m_mid = np.floor(M/4).astype('int')
-	m_stop = (np.floor(M/4)+np.floor(M/2)).astype('int')
-	n_mid = np.floor(N/4).astype('int')
-	n_stop = (np.floor(N/4)+np.floor(N/2)).astype('int')
-	dV = test[m_mid:m_stop, n_mid : n_stop]
-	return dV
 
 def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilon):
 	N_x = nx * 2
@@ -92,7 +66,6 @@ def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilo
 	P_K = (np.power(2,d) * np.power(np.pi,d/2) * ar * ar * az * gamma(kappa+d/2)) / (gamma(abs(kappa)) * np.power(1+K_sq,kappa+d/2.))
 	Y2 = Y2 * np.sqrt(P_K)
 	# ifft
-	print(Y2.shape)
 	newV = ifftn(Y2)
 	print('done ifft')
 	test = np.real(newV[:N_x, :N_y, :N_z])
@@ -108,15 +81,66 @@ def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilo
 	return dV
 
 def plot_velocity(vel3d):
-	fig = plt.figure()
-	ax = fig.add_subplot(121)
-	ax.set_title('Depth at shallow, heterogeneity')
-	ax.imshow(vel3d[:,:,0], cmap='jet')
-	ax = fig.add_subplot(122)
-	ax.set_title('Depth at deeper, constant')
-	ax.imshow(vel3d[:,:,10], cmap='jet')
+	v_min = np.min(vel3d[10,:,:])
+	v_max = np.max(np.array([vel3d[10,:,:], vel3d[30,:,:]]))
+	fig, axes = plt.subplots(nrows=1, ncols=2)
+	axes[0].set_title('Depth at shallow, heterogeneity')
+	im = axes[0].imshow(vel3d[10,:,:], cmap='jet', vmin=v_min, vmax=v_max)
+	axes[0].set_xlabel('dx')
+	axes[0].set_ylabel('dy')
+
+	axes[1].set_title('Depth at deeper, constant')
+	axes[1].imshow(vel3d[30,:,:], cmap='jet', vmin=v_min, vmax=v_max)
+	axes[1].set_xlabel('dx')
+	axes[1].set_ylabel('dy')
+	fig.colorbar(im, ax=axes.ravel().tolist())
 	plt.savefig('velocity.png', dpi=500)
 	plt.close()
+
+def genearte_velocity(nx,ny,nz,dx,dy,dz):
+	dV = von_Karman_3d_velo(nx,ny,int(10/dz),dx,dy,dz,0.5,0.1,0.04,0.107)
+	dvxyz = np.swapaxes(dV, 0, 2)
+	# set up velocity structure
+	# for P velocity
+	f = open('./vjma2001', 'r')
+	tmp = f.readlines()
+	f.close()
+	v = []
+	for i in tmp[:nz]:
+		v.append(float(i.split()[0]))
+	v = np.array(v)
+	v = np.expand_dims(v,1)
+	h = np.ones([1,nx])
+	vel = np.multiply(v,h,dtype='float32') #z,x
+	vel3d=np.zeros([nz,nx,ny],dtype='float32')
+	for ii in range(ny):
+		vel3d[:,:,ii]=vel
+	vel3d[:int(10/dz),:,:] += dvxyz
+	vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
+	p_vel_structure = vxyz.flatten(order='F')
+
+	plot_velocity(vel3d)
+
+	f = open('./vjma2001', 'r')
+	tmp = f.readlines()
+	f.close()
+	v = []
+	for i in tmp[:nz]:
+		v.append(float(i.split()[1]))
+	v = np.array(v)
+	v = np.expand_dims(v,1)
+	h = np.ones([1,nx])
+	vel = np.multiply(v,h,dtype='float32') #z,x
+	vel3d=np.zeros([nz,nx,ny],dtype='float32')
+	for ii in range(ny):
+		vel3d[:,:,ii]=vel
+	vel3d[:int(10/dz),:,:] += dvxyz
+	vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
+	s_vel_structure = vxyz.flatten(order='F')
+
+	np.save('p_vel', p_vel_structure)
+	np.save('s_vel', s_vel_structure)
+	return p_vel_structure, s_vel_structure
 
 # set up basic parameters
 
@@ -128,72 +152,47 @@ dz = 0.5
 dy = 0.5
 print(f'Range: in x direction {(nx-1)*dx} in y direction {(ny-1)*dy} in z direction {(nz-1)*dz}')
 
-# set up velocity structure
-f = open('./vjma2001', 'r')
-tmp = f.readlines()
-f.close()
-v = []
-for i in tmp[:nz]:
-	v.append(float(i.split()[0]))
-v = np.array(v)
-v = np.expand_dims(v,1)
-h = np.ones([1,nx])
-vel = np.multiply(v,h,dtype='float32') #z,x
-vel3d=np.zeros([nz,nx,ny],dtype='float32')
-for ii in range(ny):
-	vel3d[:,:,ii]=vel
-vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
-p_vel_structure = vxyz.flatten(order='F')
-
-plot_velocity(vel3d)
-
-f = open('./vjma2001', 'r')
-tmp = f.readlines()
-f.close()
-v = []
-for i in tmp[:nz]:
-	v.append(float(i.split()[1]))
-v = np.array(v)
-v = np.expand_dims(v,1)
-h = np.ones([1,nx])
-vel = np.multiply(v,h,dtype='float32') #z,x
-vel3d=np.zeros([nz,nx,ny],dtype='float32')
-for ii in range(ny):
-	vel3d[:,:,ii]=vel
-vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
-s_vel_structure = vxyz.flatten(order='F')
+# load velocity
+#p_vel_structure, s_vel_structure = genearte_velocity(nx,ny,nz,dx,dy,dz)
+p_vel_structure = np.load('p_vel.npy')
+s_vel_structure = np.load('s_vel.npy')
 
 # set up stations
 
-stations = [[100,100], [50,100], [150,100], [100,50], [100, 150], [50,50], [150,150], [150,50], [30,130], [60,60]]
+stations = [[100,100], [20,100], [180,100], [100,20], [100, 180], [10,10], [190,190], [30,50], [30,130], [60,60]]
 
 # set up sources
-# fit a line which goes from [100,50,12] to [120,80,14]
+# fit a line which goes from [200,200,12] to [200,190,14]
 np.random.seed(0)
 a = np.random.rand(50,1)
-x = 100 + 20*a
-y = 50 + 30*a
-z = 12 + 2*a
+x = 100 + 50 * a
+y = 100 - 50*a
+z = 10 + 2*a
 sources = np.hstack([x,y,z])
-
+a = np.random.rand(50,1)
+x = 100 + 50 * a
+y = 100 + 50*a
+z = 10 + 2*a
+sources = np.vstack([sources,np.hstack([x,y,z])])
+print(sources.shape)
 
 # change the sources to earth coordinates
 o_lat = 30
 o_lon = 10
 o_sources = []
 for source in sources:
-	lat,lon = get_point_at_distance(o_lat, o_lon, np.sqrt((source[0]*dx)**2+(source[1]*dy)**2), np.arctan(source[0]*dx/(source[1]*dy)))
+	lat,lon = get_point_at_distance(o_lat, o_lon, np.sqrt((source[0]*dx)**2+(source[1]*dy)**2), np.arctan(source[0]*dx/(source[1]*dy))/np.pi*180.)
 	o_sources.append([lat,lon, source[2]])
 
 # change the stations to earth coordinates
 o_stations = []
 for station in stations:
-	lat, lon = get_point_at_distance(o_lat, o_lon, np.sqrt((station[0]*dx)**2+(station[1]*dy)**2), np.arctan(station[0]*dx/(station[1]*dy)))
+	lat, lon = get_point_at_distance(o_lat, o_lon, np.sqrt((station[0]*dx)**2+(station[1]*dy)**2), np.arctan(station[0]*dx/(station[1]*dy))/np.pi*180.)
 	o_stations.append([lat,lon])
 	
 # write hypoDD file
 # write station.dat
-f = open('station.dat', 'w')
+f = open('./hypoDD/station.dat', 'w')
 for i in range(0,len(o_stations)):
     f.write(f'ST{i} {o_stations[i][0]:5.3f} {o_stations[i][1]:6.3f}\n')
 f.close()
@@ -208,7 +207,7 @@ plot_source_station(np.array(o_stations), np.array(o_sources))
 
 p_time_table = np.zeros([len(o_sources), len(o_stations)])
 s_time_table = np.zeros([len(o_sources), len(o_stations)])
-f = open('test.pha', 'w+')
+f = open('./hypoDD/test.pha', 'w+')
 f2 = open('benchmark_station.txt', 'w')
 
 for i in range(0, len(o_sources)):
@@ -229,8 +228,8 @@ for i in range(0, len(o_sources)):
 		f.write(f"ST{j}    {travel_time:4.2f}0  1.000    S \n")
 f.close()
 f2.close()
-np.save('tt_P',p_time_table)
-np.save('tt_S',s_time_table)
+np.save('./hypoDD/tt_P',p_time_table)
+np.save('./hypoDD/tt_S',s_time_table)
 
 
 # 
