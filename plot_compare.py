@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib import animation
 
 stations = np.load('sta.npy')
 sources = np.load('source.npy')
@@ -19,6 +20,26 @@ ax.set_xlabel('Latitude')
 ax.set_ylabel('Longitude')
 ax.set_zlabel('Z')
 ax.invert_zaxis()
-ax.view_init(elev=20., azim=-35, roll=0)
 
+def init():
+    ax.view_init(elev=10., azim=0)
+    return fig,
+def animate(i):
+    ax.view_init(elev=10., azim=i)
+    return fig,
+
+
+anim = animation.FuncAnimation(fig, animate, init_func=init, frames=300, interval=20, blit=True)
+anim.save('ana.mp4', fps=20, extra_args=['-vcodec', 'libx264'])
+
+plt.close()
+
+fig = plt.figure()
+ax = fig.add_subplot()
+ax.scatter(sources[:,0], sources[:,1], label='sources', marker = "*", c='blue')
+ax.scatter(catalog_hypoDD['LAT'], catalog_hypoDD['LON'], label='hypoDD', marker='*', c='red')
+ax.scatter(catalog_gc['latR'], catalog_gc['lonR'], label='GrowClust', marker='*', c='green')
+ax.legend()
+ax.set_xlabel('Latitude')
+ax.set_ylabel('Longitude')
 plt.show()

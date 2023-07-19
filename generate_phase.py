@@ -33,9 +33,9 @@ def plot_source_station(stations,sources):
 	ax.scatter(sources[:,0], sources[:,1], sources[:,2], zdir='z', label='sources', marker = "*")
 	ax.legend()
 	ax.set_xlabel('Latitude')
-	ax.set_xlim([30, 31.2])
+	ax.set_xlim([30, 31.5])
 	ax.set_ylabel('Longitude')
-	ax.set_ylim([10, 11.2])
+	ax.set_ylim([120, 121.5])
 	ax.set_zlabel('Z')
 	ax.set_zlim([0, 30])
 	ax.invert_zaxis()
@@ -83,7 +83,7 @@ def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilo
 def plot_velocity(vel3d):
 	v_min = np.min(vel3d[10,:,:])
 	v_max = np.max(np.array([vel3d[10,:,:], vel3d[30,:,:]]))
-	fig, axes = plt.subplots(nrows=1, ncols=2)
+	fig, axes = plt.subplots(nrows=1, ncols=2, figsize=[12,6])
 	axes[0].set_title('Depth at shallow, heterogeneity')
 	im = axes[0].imshow(vel3d[10,:,:], cmap='jet', vmin=v_min, vmax=v_max)
 	axes[0].set_xlabel('dx')
@@ -93,7 +93,8 @@ def plot_velocity(vel3d):
 	axes[1].imshow(vel3d[30,:,:], cmap='jet', vmin=v_min, vmax=v_max)
 	axes[1].set_xlabel('dx')
 	axes[1].set_ylabel('dy')
-	fig.colorbar(im, ax=axes.ravel().tolist())
+	cbar = fig.colorbar(im, ax=axes.ravel().tolist(), orientation="horizontal")
+	cbar.set_label('Vp (m/s)')
 	plt.savefig('velocity.png', dpi=500)
 	plt.close()
 
@@ -145,24 +146,25 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 # set up basic parameters
 
 nz = 61
-nx = 201
-ny = 201
+nx = 221
+ny = 221
 dx = 0.5
 dz = 0.5
 dy = 0.5
 print(f'Range: in x direction {(nx-1)*dx} in y direction {(ny-1)*dy} in z direction {(nz-1)*dz}')
 
 # load velocity
-#p_vel_structure, s_vel_structure = genearte_velocity(nx,ny,nz,dx,dy,dz)
-p_vel_structure = np.load('p_vel.npy')
-s_vel_structure = np.load('s_vel.npy')
+p_vel_structure, s_vel_structure = genearte_velocity(nx,ny,nz,dx,dy,dz)
+#p_vel_structure = np.load('p_vel.npy')
+#s_vel_structure = np.load('s_vel.npy')
 
 # set up stations
 
-stations = [[100,100], [20,100], [180,100], [100,20], [100, 180], [10,10], [190,190], [30,50], [30,130], [60,60]]
+stations = [[1,1], [220,1], [1,220], [220,220], [111,111], [111,60], [171, 111], [61, 111], [111,171], [80, 180], [180,80], [40,80], [40, 180]]
 
 # set up sources
 # fit a line which goes from [200,200,12] to [200,190,14]
+'''
 np.random.seed(0)
 a = np.random.rand(50,1)
 x = 100 + 50 * a
@@ -172,13 +174,19 @@ sources = np.hstack([x,y,z])
 a = np.random.rand(50,1)
 x = 100 + 50 * a
 y = 100 + 50*a
-z = 10 + 2*a
+z = 14 + 2*a
 sources = np.vstack([sources,np.hstack([x,y,z])])
 print(sources.shape)
-
+'''
+np.random.seed(0)
+x = 110 + (np.random.rand(50,1) - 0.5) * 50
+y = 110 - (np.random.rand(50,1) - 0.5) * 40
+z = 12 + 0.12 * (x-100) + 0.1 * (y-100)
+sources = np.hstack([x,y,z])
+print(sources.shape)
 # change the sources to earth coordinates
 o_lat = 30
-o_lon = 10
+o_lon = 120
 o_sources = []
 for source in sources:
 	lat,lon = get_point_at_distance(o_lat, o_lon, np.sqrt((source[0]*dx)**2+(source[1]*dy)**2), np.arctan(source[0]*dx/(source[1]*dy))/np.pi*180.)

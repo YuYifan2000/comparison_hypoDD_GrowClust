@@ -9,6 +9,6 @@ cp ./dt.cc ../growclust/IN/
 cd ../growclust/IN
 python event2evlist.py
 cd ..
-growclust ssprings.inp
+growclust ssprings.inp > gc.log
 cd ..
 python plot_compare.py

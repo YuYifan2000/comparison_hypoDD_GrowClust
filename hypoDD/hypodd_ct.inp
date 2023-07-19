@@ -29,7 +29,7 @@ hypoDD.src
 * IPHA: 1= P; 2= S; 3= P&S
 * DIST:max dist [km] between cluster centroid and station 
 * IDAT   IPHA   DIST
-    3     3     100
+    3    3     100
 *
 *--- event clustering:
 * OBSCC:    min # of obs/pair for crosstime data (0= no clustering)
@@ -42,7 +42,7 @@ hypoDD.src
 * ISOLV:	1 = SVD, 2=lsqr
 * NSET:      	number of sets of iteration with specifications following
 *  ISTART  ISOLV  NSET
-    2        2      2
+    2        2      4
 *
 *--- data weighting and re-weighting: 
 * NITER: 		last iteration to used the following weights
@@ -53,10 +53,10 @@ hypoDD.src
 * DAMP:    		damping (for lsqr only) 
 *       ---  CROSS DATA ----- ----CATALOG DATA ----
 * NITER WTCCP WTCCS WRCC WDCC WTCTP WTCTS WRCT WDCT DAMP
-    4    1.0   0.8  -9  -9    1.0  0.8  -9  -9  30
-    4    1.0   0.8  6  -9    1.0   0.8  6  -9  30
-*    4    1.0   1.0   -9  -9  0.01  0.01  6  -9  20
-*    4    1.0   1.0   4   -9  0.01  0.01  4  -9  20
+    4    0.01   0.01  -9  -9    1.0  0.5  -9  -9  25
+    4    0.01   0.01  6  -9    1.0   0.7  6  -9  25
+    4    1.0   0.8   6  -9  0.01  0.01  6  -9  25
+    4    1.0   0.8   4   -9  0.01  0.01  4  -9  25
 *   3    1.0   0.8   6  0.5  -9  -9  -9  -9  70
 *
 *--- 1D model:
