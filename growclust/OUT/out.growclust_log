@@ -29,30 +29,38 @@
  *************************************   Cluster GrowLog   ****************************************
   
    CID1   CID2    NB1   NB2   CID    NB NPR NDT   dLATC     dLONC     dDEPC     dDISTC   RMSC  RMEDC
-     18     20     1     1     18     2  1  20   0.00015  -0.00017   0.96236   1.17644   0.06   0.05
-     33     38     1     1     33     2  1  18  -0.00185   0.00953   2.05626   3.41930   0.05   0.03
-     12     33     1     2     12     3  2  36   0.00422  -0.00239   0.56763   0.80250   0.05   0.01
-      4     46     1     1      4     2  1  18  -0.00208  -0.00198  -0.73929   3.81582   0.03   0.02
-      7     42     1     1      7     2  1  18  -0.00144   0.00123  -0.48137   1.76517   0.02   0.01
-      6     26     1     1      6     2  1   9  -0.00068  -0.00079   0.12541   1.00149   0.00   0.00
-     29      4     1     2     29     3  1   9  -0.00102  -0.00202   0.70233   1.28410   0.00   0.00
+      1     42     1     1      1     2  1  20  -0.00439  -0.00904  -0.64122   3.24655   0.03   0.01
+     37     41     1     1     37     2  1  20   0.00968  -0.02183   1.24516   4.46510   0.06   0.03
+     36     38     1     1     36     2  1  20   0.01018   0.00152   1.99750   4.71369   0.03   0.02
+     33     50     1     1     33     2  1  20   0.00548  -0.01032  -0.16273   2.93893   0.01   0.00
+     29     32     1     1     29     2  1  20  -0.01155   0.02183   0.24762   4.66032   0.07   0.03
+     26     33     1     2     26     3  2  40   0.00447  -0.02180  -1.39421   4.84096   0.02   0.01
+     20     46     1     1     20     2  1  20  -0.00544  -0.01794  -0.91849   4.61472   0.01   0.00
+     16     44     1     1     16     2  1  20  -0.02180  -0.00612   0.53981   3.60075   0.04   0.03
+     16     27     2     1     16     3  1  20   0.01679   0.00863   0.22739   2.87711   0.01   0.00
+     11     20     1     2     11     3  2  40   0.00130  -0.00124  -0.08705   2.66348   0.02   0.01
+     10     12     1     1     10     2  1  20   0.00870   0.01298   0.85942   1.25902   0.02   0.00
+      8     14     1     1      8     2  1  20   0.00684   0.00289   0.11373   1.23074   0.02   0.00
+      6      8     1     2      6     3  2  40  -0.00152   0.02558  -1.29674   3.39584   0.04   0.01
+      5     43     1     1      5     2  1  20   0.00376   0.02238   1.71562   1.09842   0.05   0.03
+      3     13     1     1      3     2  1  20   0.02191  -0.00238   0.31017   2.62873   0.01   0.01
  **************************************************************************************************
   
  ************************************  GROWCLUST Run Summary  *************************************
   
                              Number of catalog events:         50
-                           Number of relocated events:         12
-                          Number of input event pairs:        351
-                           Number of event pairs used:          8
-                Number of xcor data used (total, P+S):        128
-                   Number of xcor data used (P-phase):         73
-             RMS differential time residual (P-phase):     0.0277
-   Mean (signed) differential time residual (P-phase):     0.0707
-                   Number of xcor data used (S-phase):         55
-             RMS differential time residual (S-phase):     0.0557
-   Mean (signed) differential time residual (S-phase):     0.0823
+                           Number of relocated events:         26
+                          Number of input event pairs:        481
+                           Number of event pairs used:         19
+                Number of xcor data used (total, P+S):        380
+                   Number of xcor data used (P-phase):        190
+             RMS differential time residual (P-phase):     0.0265
+   Mean (signed) differential time residual (P-phase):     0.0635
+                   Number of xcor data used (S-phase):        190
+             RMS differential time residual (S-phase):     0.0434
+   Mean (signed) differential time residual (S-phase):     0.1086
   
-                Number of clusters with >=   2 events:         5
+                Number of clusters with >=   2 events:        11
                 Number of clusters with >=   5 events:         0
                 Number of clusters with >=  10 events:         0
                 Number of clusters with >=  20 events:         0

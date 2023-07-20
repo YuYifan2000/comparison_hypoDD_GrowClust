@@ -2,6 +2,7 @@ import pyekfmm as fmm
 import numpy as np
 import matplotlib.pyplot as plt
 
+from obspy.geodetics.base import locations2degrees
 from scipy.fft import fft2, fftfreq, ifft2, fftn, ifftn
 from scipy.special import gamma
 from math import asin, atan2, cos, degrees, radians, sin
@@ -99,8 +100,9 @@ def plot_velocity(vel3d):
 	plt.close()
 
 def genearte_velocity(nx,ny,nz,dx,dy,dz):
-	dV = von_Karman_3d_velo(nx,ny,int(10/dz),dx,dy,dz,0.5,0.1,0.04,0.107)
-	dvxyz = np.swapaxes(dV, 0, 2)
+	depth = 5.
+	dV = von_Karman_3d_velo(nx,ny,int(depth/dz),dx,dy,dz,0.5,0.1,0.04,0.107)
+	dvxyz = np.swapaxes(np.swapaxes(dV, 0, 2),1,2)
 	# set up velocity structure
 	# for P velocity
 	f = open('./vjma2001', 'r')
@@ -116,8 +118,10 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 	vel3d=np.zeros([nz,nx,ny],dtype='float32')
 	for ii in range(ny):
 		vel3d[:,:,ii]=vel
-	vel3d[:int(10/dz),:,:] += dvxyz
+	dvxyz = 0
+	vel3d[:int(depth/dz),:,:] += dvxyz
 	vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
+	print(vxyz.shape)
 	p_vel_structure = vxyz.flatten(order='F')
 
 	plot_velocity(vel3d)
@@ -135,7 +139,8 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 	vel3d=np.zeros([nz,nx,ny],dtype='float32')
 	for ii in range(ny):
 		vel3d[:,:,ii]=vel
-	vel3d[:int(10/dz),:,:] += dvxyz
+	dvxyz = 0
+	vel3d[:int(depth/dz),:,:] += dvxyz/5.
 	vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
 	s_vel_structure = vxyz.flatten(order='F')
 
@@ -146,11 +151,11 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 # set up basic parameters
 
 nz = 61
-nx = 221
-ny = 221
-dx = 0.5
+nx = 121
+ny = 141
+dx = 0.25
 dz = 0.5
-dy = 0.5
+dy = 0.25
 print(f'Range: in x direction {(nx-1)*dx} in y direction {(ny-1)*dy} in z direction {(nz-1)*dz}')
 
 # load velocity
@@ -160,7 +165,7 @@ p_vel_structure, s_vel_structure = genearte_velocity(nx,ny,nz,dx,dy,dz)
 
 # set up stations
 
-stations = [[1,1], [220,1], [1,220], [220,220], [111,111], [111,60], [171, 111], [61, 111], [111,171], [80, 180], [180,80], [40,80], [40, 180]]
+stations = [[1,1], [120,1], [1,120], [120,120], [61,61], [111,60], [101, 61], [61, 111], [61,91], [50, 100], [100,50], [40,80], [40, 100]]
 
 # set up sources
 # fit a line which goes from [200,200,12] to [200,190,14]
@@ -179,17 +184,17 @@ sources = np.vstack([sources,np.hstack([x,y,z])])
 print(sources.shape)
 '''
 np.random.seed(0)
-x = 110 + (np.random.rand(50,1) - 0.5) * 50
-y = 110 - (np.random.rand(50,1) - 0.5) * 40
-z = 12 + 0.12 * (x-100) + 0.1 * (y-100)
-sources = np.hstack([x,y,z])
-print(sources.shape)
+x = 60 + (np.random.rand(50,1) - 0.5) * 35
+y = 60 - (np.random.rand(50,1) - 0.5) * 30
+z = 16 + 0.1 * (x-60) + 0.2 * (y-60)
+sources = np.hstack([x*dx,y*dy,z*dz])
+
 # change the sources to earth coordinates
 o_lat = 30
 o_lon = 120
 o_sources = []
 for source in sources:
-	lat,lon = get_point_at_distance(o_lat, o_lon, np.sqrt((source[0]*dx)**2+(source[1]*dy)**2), np.arctan(source[0]*dx/(source[1]*dy))/np.pi*180.)
+	lat,lon = get_point_at_distance(o_lat, o_lon, np.sqrt((source[0])**2+(source[1])**2), np.arctan(source[0]/(source[1]))/np.pi*180.)
 	o_sources.append([lat,lon, source[2]])
 
 # change the stations to earth coordinates
@@ -220,18 +225,21 @@ f2 = open('benchmark_station.txt', 'w')
 
 for i in range(0, len(o_sources)):
 	print(i)
-	random_lat = o_sources[i][0]+np.random.rand(1)[0]/10.
-	random_lon = o_sources[i][1]+np.random.rand(1)[0]/10.
-	f.write(f"# 2000 12 13 15 00 23.48 {random_lat:6.3f} {random_lon:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
-	f2.write(f"# 2000 12 13 15 00 23.48 {o_sources[i][0]:5.3f} {o_sources[i][1]:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
+	random_lat = o_sources[i][0]+(np.random.rand(1)[0]-0.5)/5.
+	random_lon = o_sources[i][1]+(np.random.rand(1)[0]-0.5)/5.
+	random_dep = sources[i][2]+(np.random.rand(1)[0]-0.5)/8.
+	f.write(f"# 2000 12 13 15 00 1.00 {random_lat:6.3f} {random_lon:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
+	f2.write(f"# 2000 12 13 15 00 1.00 {o_sources[i][0]:5.3f} {o_sources[i][1]:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
+	tp = fmm.eikonal(p_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')
+	tp = tp[:,:,0]
+	ts = fmm.eikonal(s_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')
+	ts = ts[:,:,0]
 	for j in range(0, len(stations)):
-		t = fmm.eikonal(p_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')[:,:,0]
-		travel_time = t[stations[j][0]][stations[j][1]]
+		travel_time = tp[stations[j][0], stations[j][1]]
 		p_time_table[i][j] = travel_time
 		f.write(f"ST{j}    {travel_time:4.2f}0  1.000    P \n")
-
-		t = fmm.eikonal(s_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')[:,:,0]
-		travel_time = t[stations[j][0]][stations[j][1]]
+	
+		travel_time = ts[stations[j][0]][stations[j][1]]
 		s_time_table[i][j] = travel_time
 		f.write(f"ST{j}    {travel_time:4.2f}0  1.000    S \n")
 f.close()
