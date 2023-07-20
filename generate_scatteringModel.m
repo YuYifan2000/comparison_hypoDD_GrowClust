@@ -7,9 +7,9 @@ dV = generate_scatter_rand2d(nx,nz,.005,.5,.1,.107,.04);
 
 % 
 % % Vp = Vp'.*(1 + dV);
-Vp = Vp + dV;
-
-
+Vp = Vp *(1 + dV);
+Vs = Vs *(1 + dV);
+Den = Den * (1+dV*0.8);
 % Vs = Vs + dV./1.8;
 % Den = Vp.*0 + 33./((Vs).^2);
 Vs=Vp./(3^0.5);

@@ -23,6 +23,7 @@ Vs = 2*rand([N M])-1;
 
 %%%2D FFT
 Y2 = fft2(Vs);
+%%% demean whitening
 
 %%%Define wavenumber along x and z
 kx1 = mod( 1/2 + (0:(M-1))/M , 1 ) - 1/2;

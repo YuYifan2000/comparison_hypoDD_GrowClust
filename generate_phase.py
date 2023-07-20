@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from obspy.geodetics.base import locations2degrees
+from scipy.signal import detrend
 from scipy.fft import fft2, fftfreq, ifft2, fftn, ifftn
 from scipy.special import gamma
 from math import asin, atan2, cos, degrees, radians, sin
@@ -40,7 +41,7 @@ def plot_source_station(stations,sources):
 	ax.set_zlabel('Z')
 	ax.set_zlim([0, 30])
 	ax.invert_zaxis()
-	ax.view_init(elev=20., azim=-35, roll=0)
+	ax.view_init(elev=20., azim=-35)
 	plt.savefig('source_station.png', dpi=500)
 	#plt.show()
 	plt.close()
@@ -53,13 +54,11 @@ def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilo
 
 	# 3D FFT
 	Y2 = fftn(Vs)
-	print('done fftn')
 	# define the wavenumber scale in X and Z
 	kx = fftfreq(N_x, delta_x)*2*np.pi
 	ky = fftfreq(N_y, delta_y)*2*np.pi
 	kz = fftfreq(N_z, delta_z)*2*np.pi
 	kx_, ky_, kz_ = np.meshgrid(ky,kx,kz)
-	print('done mesh')
 	K_sq = ky_**2 * ar**2 + kx_**2 * ar**2 + kz_**2 * az**2
 	d = 3.
 	# Von Karman distribution
@@ -68,9 +67,7 @@ def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilo
 	Y2 = Y2 * np.sqrt(P_K)
 	# ifft
 	newV = ifftn(Y2)
-	print('done ifft')
 	test = np.real(newV[:N_x, :N_y, :N_z])
-	test = epsilon / np.std(test) * test
 	x_mid = np.floor(N_x/4).astype('int')
 	x_stop = np.floor(N_x/4+nx).astype('int')
 	y_mid = np.floor(N_y/4).astype('int')
@@ -79,22 +76,25 @@ def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilo
 	z_stop = np.floor(N_z/4+nz).astype('int')
 	
 	dV = test[x_mid:x_stop, y_mid:y_stop, z_mid : z_stop]
+	dV = detrend(dV, axis=0, type='constant')
+	dV = epsilon / np.std(dV) * dV
 	return dV
 
 def plot_velocity(vel3d):
-	v_min = np.min(vel3d[10,:,:])
-	v_max = np.max(np.array([vel3d[10,:,:], vel3d[30,:,:]]))
+	v_min = np.min(vel3d[6,:,:])
+	v_max = np.max(np.array([vel3d[6,:,:], vel3d[30,:,:]]))
 	fig, axes = plt.subplots(nrows=1, ncols=2, figsize=[12,6])
 	axes[0].set_title('Depth at shallow, heterogeneity')
-	im = axes[0].imshow(vel3d[10,:,:], cmap='jet', vmin=v_min, vmax=v_max)
+	im = axes[0].imshow(vel3d[6,:,:], cmap='jet')
 	axes[0].set_xlabel('dx')
 	axes[0].set_ylabel('dy')
-
+	cbar = fig.colorbar(im, ax=axes[0], orientation="horizontal")
+	cbar.set_label('Vp (m/s)')
 	axes[1].set_title('Depth at deeper, constant')
-	axes[1].imshow(vel3d[30,:,:], cmap='jet', vmin=v_min, vmax=v_max)
+	im = axes[1].imshow(vel3d[30,:,:], cmap='jet')
 	axes[1].set_xlabel('dx')
 	axes[1].set_ylabel('dy')
-	cbar = fig.colorbar(im, ax=axes.ravel().tolist(), orientation="horizontal")
+	cbar = fig.colorbar(im, ax=axes[1], orientation="horizontal")
 	cbar.set_label('Vp (m/s)')
 	plt.savefig('velocity.png', dpi=500)
 	plt.close()
@@ -109,40 +109,29 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 	tmp = f.readlines()
 	f.close()
 	v = []
+	vs = []
 	for i in tmp[:nz]:
 		v.append(float(i.split()[0]))
+		vs.append(float(i.split()[1]))
 	v = np.array(v)
+	vs = np.array(vs)
 	v = np.expand_dims(v,1)
+	vs = np.expand_dims(vs, 1)
 	h = np.ones([1,nx])
 	vel = np.multiply(v,h,dtype='float32') #z,x
+	vels = np.multiply(vs, h ,dtype='float32')
 	vel3d=np.zeros([nz,nx,ny],dtype='float32')
+	vels3d = np.zeros([nz,nx,ny], dtype='float32')
 	for ii in range(ny):
 		vel3d[:,:,ii]=vel
-	dvxyz = 0
-	vel3d[:int(depth/dz),:,:] += dvxyz
+		vels3d[:,:,ii] = vels
+	vel3d[:int(depth/dz),:,:] *= (1+dvxyz)
+	vels3d[:int(depth/dz),:,:] *= (1+dvxyz)
 	vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
-	print(vxyz.shape)
+	vsxyz = np.swapaxes(np.swapaxes(vels3d,0,1),1,2)
 	p_vel_structure = vxyz.flatten(order='F')
-
+	s_vel_structure = vsxyz.flatten(order='F')
 	plot_velocity(vel3d)
-
-	f = open('./vjma2001', 'r')
-	tmp = f.readlines()
-	f.close()
-	v = []
-	for i in tmp[:nz]:
-		v.append(float(i.split()[1]))
-	v = np.array(v)
-	v = np.expand_dims(v,1)
-	h = np.ones([1,nx])
-	vel = np.multiply(v,h,dtype='float32') #z,x
-	vel3d=np.zeros([nz,nx,ny],dtype='float32')
-	for ii in range(ny):
-		vel3d[:,:,ii]=vel
-	dvxyz = 0
-	vel3d[:int(depth/dz),:,:] += dvxyz/5.
-	vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
-	s_vel_structure = vxyz.flatten(order='F')
 
 	np.save('p_vel', p_vel_structure)
 	np.save('s_vel', s_vel_structure)
