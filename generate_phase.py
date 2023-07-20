@@ -32,16 +32,16 @@ def plot_source_station(stations,sources):
 	fig = plt.figure(figsize=[12,6])
 	ax = fig.add_subplot(projection='3d')
 	ax.scatter(stations[:,0], stations[:,1], zs=0, zdir='z', label='station', marker="^")
-	ax.scatter(sources[:,0], sources[:,1], sources[:,2], zdir='z', label='sources', marker = "*")
+	ax.scatter(sources[:,0], sources[:,1], sources[:,2], zdir='z', label='sources', s=1)
 	ax.legend()
 	ax.set_xlabel('Latitude')
-	ax.set_xlim([30, 31.5])
+	#ax.set_xlim([30, 31.5])
 	ax.set_ylabel('Longitude')
-	ax.set_ylim([120, 121.5])
+	#ax.set_ylim([120, 121.5])
 	ax.set_zlabel('Z')
 	ax.set_zlim([0, 30])
 	ax.invert_zaxis()
-	ax.view_init(elev=20., azim=-35)
+	ax.view_init(elev=30., azim=-45)
 	plt.savefig('source_station.png', dpi=500)
 	#plt.show()
 	plt.close()
@@ -100,7 +100,7 @@ def plot_velocity(vel3d):
 	plt.close()
 
 def genearte_velocity(nx,ny,nz,dx,dy,dz):
-	depth = 5.
+	depth = 10.
 	dV = von_Karman_3d_velo(nx,ny,int(depth/dz),dx,dy,dz,0.5,0.1,0.04,0.107)
 	dvxyz = np.swapaxes(np.swapaxes(dV, 0, 2),1,2)
 	# set up velocity structure
@@ -129,6 +129,8 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 	vels3d[:int(depth/dz),:,:] *= (1+dvxyz)
 	vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
 	vsxyz = np.swapaxes(np.swapaxes(vels3d,0,1),1,2)
+	np.save('p_vel_array', vxyz)
+	np.save('s_vel_array', vsxyz)
 	p_vel_structure = vxyz.flatten(order='F')
 	s_vel_structure = vsxyz.flatten(order='F')
 	plot_velocity(vel3d)
@@ -140,11 +142,11 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 # set up basic parameters
 
 nz = 61
-nx = 121
-ny = 141
-dx = 0.25
+nx = 201
+ny = 201
+dx = 0.5
 dz = 0.5
-dy = 0.25
+dy = 0.5
 print(f'Range: in x direction {(nx-1)*dx} in y direction {(ny-1)*dy} in z direction {(nz-1)*dz}')
 
 # load velocity
@@ -154,7 +156,7 @@ p_vel_structure, s_vel_structure = genearte_velocity(nx,ny,nz,dx,dy,dz)
 
 # set up stations
 
-stations = [[1,1], [120,1], [1,120], [120,120], [61,61], [111,60], [101, 61], [61, 111], [61,91], [50, 100], [100,50], [40,80], [40, 100]]
+stations = [[1,1], [200,1], [1,200], [200,200], [100,100], [50,100], [150, 100], [100, 150], [100,50], [120, 120], [120,80], [80,80], [80, 120]]
 
 # set up sources
 # fit a line which goes from [200,200,12] to [200,190,14]
@@ -173,9 +175,9 @@ sources = np.vstack([sources,np.hstack([x,y,z])])
 print(sources.shape)
 '''
 np.random.seed(0)
-x = 60 + (np.random.rand(50,1) - 0.5) * 35
-y = 60 - (np.random.rand(50,1) - 0.5) * 30
-z = 16 + 0.1 * (x-60) + 0.2 * (y-60)
+x = 110 + (np.random.rand(100,1) - 0.5) * 20
+y = 100 - (np.random.rand(100,1) - 0.5) * 30
+z = 10 + 0.1 * (x-110) + 0.2 * (y-100)
 sources = np.hstack([x*dx,y*dy,z*dz])
 
 # change the sources to earth coordinates
@@ -214,9 +216,12 @@ f2 = open('benchmark_station.txt', 'w')
 
 for i in range(0, len(o_sources)):
 	print(i)
-	random_lat = o_sources[i][0]+(np.random.rand(1)[0]-0.5)/5.
-	random_lon = o_sources[i][1]+(np.random.rand(1)[0]-0.5)/5.
-	random_dep = sources[i][2]+(np.random.rand(1)[0]-0.5)/8.
+	#random_lat = o_sources[i][0]+(np.random.rand(1)[0]-0.5) / 5.
+	#random_lon = o_sources[i][1]+(np.random.rand(1)[0]-0.5) / 5.
+	#random_dep = sources[i][2]+(np.random.rand(1)[0]-0.5) * 1.2
+	random_lat = o_sources[i][0]
+	random_lon = o_sources[i][1]
+	random_dep = sources[i][2]
 	f.write(f"# 2000 12 13 15 00 1.00 {random_lat:6.3f} {random_lon:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
 	f2.write(f"# 2000 12 13 15 00 1.00 {o_sources[i][0]:5.3f} {o_sources[i][1]:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
 	tp = fmm.eikonal(p_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')
