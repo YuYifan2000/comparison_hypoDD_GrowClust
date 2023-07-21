@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from obspy.geodetics.base import locations2degrees
 from scipy.signal import detrend
-from scipy.fft import fft2, fftfreq, ifft2, fftn, ifftn
+from scipy.fft import fft2, fftfreq, ifft2, fftn, ifftn, fftshift
 from scipy.special import gamma
 from math import asin, atan2, cos, degrees, radians, sin
 
@@ -47,62 +47,55 @@ def plot_source_station(stations,sources):
 	plt.close()
 
 def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilon):
-	N_x = nx * 2
-	N_y = ny * 2
-	N_z = nz * 2
-	Vs = 2 * np.random.rand(N_x, N_y, N_z)-1
+
+	Vs = 2 * np.random.rand(nx, ny, nz)-1
 
 	# 3D FFT
 	Y2 = fftn(Vs)
+	# whiten
+	Y2 = np.exp(1j * np.angle(Y2))
 	# define the wavenumber scale in X and Z
-	kx = fftfreq(N_x, delta_x)*2*np.pi
-	ky = fftfreq(N_y, delta_y)*2*np.pi
-	kz = fftfreq(N_z, delta_z)*2*np.pi
+	kx = fftfreq(nx, delta_x)*2*np.pi
+	ky = fftfreq(ny, delta_y)*2*np.pi
+	kz = fftfreq(nz, delta_z)*2*np.pi
 	kx_, ky_, kz_ = np.meshgrid(ky,kx,kz)
 	K_sq = ky_**2 * ar**2 + kx_**2 * ar**2 + kz_**2 * az**2
 	d = 3.
 	# Von Karman distribution
 	#P_K = (np.power(2,d) * np.power(np.pi,d/2) * np.power(epsilon, 2) * ar * ar * az * gamma(kappa+d/2)) / (gamma(abs(kappa)) * np.power(1+K_sq,kappa+d/2.))
-	P_K = (np.power(2,d) * np.power(np.pi,d/2) * ar * ar * az * gamma(kappa+d/2)) / (gamma(abs(kappa)) * np.power(1+K_sq,kappa+d/2.))
+	P_K = (np.power(2,d) * np.power(np.pi,d/2.) * ar * ar * az * gamma(kappa+d/2)) / (gamma(abs(kappa)) * np.power(1+K_sq,kappa+d/2.))
 	Y2 = Y2 * np.sqrt(P_K)
 	# ifft
-	newV = ifftn(Y2)
-	test = np.real(newV[:N_x, :N_y, :N_z])
-	x_mid = np.floor(N_x/4).astype('int')
-	x_stop = np.floor(N_x/4+nx).astype('int')
-	y_mid = np.floor(N_y/4).astype('int')
-	y_stop = np.floor(N_y/4+ny).astype('int')
-	z_mid = np.floor(N_z/4).astype('int')
-	z_stop = np.floor(N_z/4+nz).astype('int')
-	
-	dV = test[x_mid:x_stop, y_mid:y_stop, z_mid : z_stop]
-	dV = detrend(dV, axis=0, type='constant')
+	dV = np.real(ifftn(Y2))
+	dV = detrend(dV, type='constant')
 	dV = epsilon / np.std(dV) * dV
+	fig = plt.figure()
+	ax = fig.add_subplot(111)
+	im = ax.imshow(dV[:,:,0], cmap='seismic')
+	fig.colorbar(im, ax=ax)
+	plt.show()
 	return dV
 
 def plot_velocity(vel3d):
-	v_min = np.min(vel3d[6,:,:])
-	v_max = np.max(np.array([vel3d[6,:,:], vel3d[30,:,:]]))
 	fig, axes = plt.subplots(nrows=1, ncols=2, figsize=[12,6])
 	axes[0].set_title('Depth at shallow, heterogeneity')
-	im = axes[0].imshow(vel3d[6,:,:], cmap='jet')
+	im = axes[0].imshow(vel3d[:,:,6], cmap='seismic')
 	axes[0].set_xlabel('dx')
 	axes[0].set_ylabel('dy')
 	cbar = fig.colorbar(im, ax=axes[0], orientation="horizontal")
 	cbar.set_label('Vp (m/s)')
 	axes[1].set_title('Depth at deeper, constant')
-	im = axes[1].imshow(vel3d[30,:,:], cmap='jet')
+	im = axes[1].imshow(vel3d[:,:,30], cmap='jet')
 	axes[1].set_xlabel('dx')
 	axes[1].set_ylabel('dy')
 	cbar = fig.colorbar(im, ax=axes[1], orientation="horizontal")
 	cbar.set_label('Vp (m/s)')
-	plt.savefig('velocity.png', dpi=500)
+	plt.savefig('velocity.png', dpi=1000)
 	plt.close()
 
 def genearte_velocity(nx,ny,nz,dx,dy,dz):
-	depth = 10.
+	depth = 3.
 	dV = von_Karman_3d_velo(nx,ny,int(depth/dz),dx,dy,dz,0.5,0.1,0.04,0.107)
-	dvxyz = np.swapaxes(np.swapaxes(dV, 0, 2),1,2)
 	# set up velocity structure
 	# for P velocity
 	f = open('./vjma2001', 'r')
@@ -125,15 +118,15 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 	for ii in range(ny):
 		vel3d[:,:,ii]=vel
 		vels3d[:,:,ii] = vels
-	vel3d[:int(depth/dz),:,:] *= (1+dvxyz)
-	vels3d[:int(depth/dz),:,:] *= (1+dvxyz)
 	vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
 	vsxyz = np.swapaxes(np.swapaxes(vels3d,0,1),1,2)
+	vxyz[:,:,:int(depth/dz)] *= (1+dV)
+	vsxyz[:,:,:int(depth/dz)] *= (1+dV)
 	np.save('p_vel_array', vxyz)
 	np.save('s_vel_array', vsxyz)
 	p_vel_structure = vxyz.flatten(order='F')
 	s_vel_structure = vsxyz.flatten(order='F')
-	plot_velocity(vel3d)
+	plot_velocity(vxyz)
 
 	np.save('p_vel', p_vel_structure)
 	np.save('s_vel', s_vel_structure)
@@ -141,12 +134,12 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 
 # set up basic parameters
 
-nz = 61
-nx = 201
-ny = 201
-dx = 0.5
-dz = 0.5
-dy = 0.5
+nz = 500
+nx = 500
+ny = 500
+dx = 0.01
+dz = 0.01
+dy = 0.01
 print(f'Range: in x direction {(nx-1)*dx} in y direction {(ny-1)*dy} in z direction {(nz-1)*dz}')
 
 # load velocity

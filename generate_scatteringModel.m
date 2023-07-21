@@ -7,9 +7,9 @@ dV = generate_scatter_rand2d(nx,nz,.005,.5,.1,.107,.04);
 
 % 
 % % Vp = Vp'.*(1 + dV);
-Vp = Vp *(1 + dV);
-Vs = Vs *(1 + dV);
-Den = Den * (1+dV*0.8);
+Vp = Vp .*(1 + dV);
+%Vs = Vs .*(1 + dV);
+%Den = Den * (1+dV*0.8);
 % Vs = Vs + dV./1.8;
 % Den = Vp.*0 + 33./((Vs).^2);
 Vs=Vp./(3^0.5);
@@ -48,9 +48,10 @@ Y2 = fft2(Vs);
 
 %%%Define wavenumber along x and z
 kx1 = mod( 1/2 + (0:(M-1))/M , 1 ) - 1/2;
-kx = kx1*(2*pi/delta);
+kx = fftshift(kx1*(2*pi/delta));
+
 kz1 = mod( 1/2 + (0:(N-1))/N , 1 ) - 1/2;
-kz = kz1*(2*pi/delta);
+kz = fftshift(kz1*(2*pi/delta));
 [KX,KZ] = meshgrid(kx,kz);
 
 
@@ -63,6 +64,7 @@ P_K = (4*pi*gamma(k+1)*(ax.*az))./(gamma(abs(k)).*(1+K_sq).^(k+1));
 %P_K = (ax.*az)./(1+K_sq);
 figure()
 imagesc(P_K);
+colorbar
 
 Y2 = Y2 .*sqrt(P_K);
 
