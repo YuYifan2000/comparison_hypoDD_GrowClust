@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from obspy.geodetics.base import locations2degrees
 from scipy.signal import detrend
-from scipy.fft import fft2, fftfreq, ifft2, fftn, ifftn, fftshift
+from scipy.fft import fftfreq, fftn, ifftn, fftshift
 from scipy.special import gamma
 from math import asin, atan2, cos, degrees, radians, sin
 
@@ -69,11 +69,6 @@ def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilo
 	dV = np.real(ifftn(Y2))
 	dV = detrend(dV, type='constant')
 	dV = epsilon / np.std(dV) * dV
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-	im = ax.imshow(dV[:,:,0], cmap='seismic')
-	fig.colorbar(im, ax=ax)
-	plt.show()
 	return dV
 
 def plot_velocity(vel3d):
@@ -85,7 +80,7 @@ def plot_velocity(vel3d):
 	cbar = fig.colorbar(im, ax=axes[0], orientation="horizontal")
 	cbar.set_label('Vp (m/s)')
 	axes[1].set_title('Depth at deeper, constant')
-	im = axes[1].imshow(vel3d[:,:,30], cmap='jet')
+	im = axes[1].imshow(vel3d[:,:,300], cmap='seismic')
 	axes[1].set_xlabel('dx')
 	axes[1].set_ylabel('dy')
 	cbar = fig.colorbar(im, ax=axes[1], orientation="horizontal")
@@ -94,7 +89,7 @@ def plot_velocity(vel3d):
 	plt.close()
 
 def genearte_velocity(nx,ny,nz,dx,dy,dz):
-	depth = 3.
+	depth = 10.
 	dV = von_Karman_3d_velo(nx,ny,int(depth/dz),dx,dy,dz,0.5,0.1,0.04,0.107)
 	# set up velocity structure
 	# for P velocity
@@ -134,12 +129,12 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 
 # set up basic parameters
 
-nz = 500
-nx = 500
-ny = 500
-dx = 0.01
-dz = 0.01
-dy = 0.01
+nz = 401
+nx = 601
+ny = 601
+dx = 0.1
+dz = 0.05
+dy = 0.1
 print(f'Range: in x direction {(nx-1)*dx} in y direction {(ny-1)*dy} in z direction {(nz-1)*dz}')
 
 # load velocity
@@ -149,28 +144,15 @@ p_vel_structure, s_vel_structure = genearte_velocity(nx,ny,nz,dx,dy,dz)
 
 # set up stations
 
-stations = [[1,1], [200,1], [1,200], [200,200], [100,100], [50,100], [150, 100], [100, 150], [100,50], [120, 120], [120,80], [80,80], [80, 120]]
+stations = [[1,1], [600,1], [1,600], [600,600], [300,300], [150,300], [450, 300], [300, 150], [300,450], [100, 400], [400,400], [100,100], [400, 100]]
 
 # set up sources
 # fit a line which goes from [200,200,12] to [200,190,14]
-'''
+
 np.random.seed(0)
-a = np.random.rand(50,1)
-x = 100 + 50 * a
-y = 100 - 50*a
-z = 10 + 2*a
-sources = np.hstack([x,y,z])
-a = np.random.rand(50,1)
-x = 100 + 50 * a
-y = 100 + 50*a
-z = 14 + 2*a
-sources = np.vstack([sources,np.hstack([x,y,z])])
-print(sources.shape)
-'''
-np.random.seed(0)
-x = 110 + (np.random.rand(100,1) - 0.5) * 20
-y = 100 - (np.random.rand(100,1) - 0.5) * 30
-z = 10 + 0.1 * (x-110) + 0.2 * (y-100)
+x = 300 + (np.random.rand(50,1) - 0.5) * 30
+y = 300 - (np.random.rand(50,1) - 0.5) * 40
+z = 12 + 0.1 * (x-110) + 0.2 * (y-100)
 sources = np.hstack([x*dx,y*dy,z*dz])
 
 # change the sources to earth coordinates
@@ -233,6 +215,3 @@ f.close()
 f2.close()
 np.save('./hypoDD/tt_P',p_time_table)
 np.save('./hypoDD/tt_S',s_time_table)
-
-
-# 
