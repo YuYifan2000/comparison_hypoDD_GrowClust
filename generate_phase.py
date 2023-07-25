@@ -7,7 +7,7 @@ from scipy.signal import detrend
 from scipy.fft import fftfreq, fftn, ifftn, fftshift
 from scipy.special import gamma
 from math import asin, atan2, cos, degrees, radians, sin
-
+import time
 def get_point_at_distance(lat1, lon1, d, bearing, R=6371):
     """
     lat: initial latitude, in degrees
@@ -135,6 +135,8 @@ ny = 601
 dx = 0.1
 dz = 0.05
 dy = 0.1
+
+
 print(f'Range: in x direction {(nx-1)*dx} in y direction {(ny-1)*dy} in z direction {(nz-1)*dz}')
 
 # load velocity
@@ -150,8 +152,8 @@ stations = [[1,1], [600,1], [1,600], [600,600], [300,300], [150,300], [450, 300]
 # fit a line which goes from [200,200,12] to [200,190,14]
 
 np.random.seed(0)
-x = 300 + (np.random.rand(50,1) - 0.5) * 30
-y = 300 - (np.random.rand(50,1) - 0.5) * 40
+x = 300 + (np.random.rand(10,1) - 0.5) * 30
+y = 300 - (np.random.rand(10,1) - 0.5) * 40
 z = 12 + 0.1 * (x-110) + 0.2 * (y-100)
 sources = np.hstack([x*dx,y*dy,z*dz])
 
@@ -199,10 +201,13 @@ for i in range(0, len(o_sources)):
 	random_dep = sources[i][2]
 	f.write(f"# 2000 12 13 15 00 1.00 {random_lat:6.3f} {random_lon:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
 	f2.write(f"# 2000 12 13 15 00 1.00 {o_sources[i][0]:5.3f} {o_sources[i][1]:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {i} \n")
+	st = time.time()
 	tp = fmm.eikonal(p_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')
 	tp = tp[:,:,0]
+	print(time.time()-st, 'seconds P calcu')
 	ts = fmm.eikonal(s_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')
 	ts = ts[:,:,0]
+	print(time.time()-st, 'seconds S finished')
 	for j in range(0, len(stations)):
 		travel_time = tp[stations[j][0], stations[j][1]]
 		p_time_table[i][j] = travel_time

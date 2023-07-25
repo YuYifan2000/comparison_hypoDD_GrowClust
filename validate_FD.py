@@ -1,6 +1,7 @@
 import pyekfmm as fmm
 import numpy as np
 import matplotlib.pyplot as plt
+import pykonal
 
 nz = 31
 nx = 201
@@ -20,7 +21,25 @@ for ii in range(ny):
 	vel3d[:,:,ii]=vel
 vxyz=np.swapaxes(np.swapaxes(vel3d,0,1),1,2)
 p_vel_structure = vxyz.flatten(order='F')
-source = np.array([1,1,10])
+source = np.array([140,75,16])
+
+# pykonal
+# initialize the solver
+solver = pykonal.EikonalSolver(coord_sys="cartesian")
+solver.velocity.min_coords = 0, 0, 0
+solver.velocity.node_intervals = dx, dy, dz
+solver.velocity.npts = nx, ny, nz
+solver.velocity.values = vxyz
+src_idx = source[0], source[1], source[2]
+solver.traveltime.values[src_idx] = 0
+solver.unknown[src_idx] = False
+solver.trial.push(*src_idx)
+
+# Solve the system.
+solver.solve()
+print(solver.traveltime.values[100, 100, 0])
+
+# fmm
 tp = fmm.eikonal(p_vel_structure,xyz=source,ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')
 print(tp[100,100,0])
 
@@ -30,11 +49,11 @@ ekfmm = tp[:,:,0]
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-im = ax.imshow((ekfmm-fd)*1000, cmap='seismic', vmin=-20, vmax=20)
+im = ax.imshow((ekfmm-solver.traveltime.values[:,:,0])*1000, cmap='seismic', vmin=-40, vmax=40)
 ax.set_title('At surface')
 ax.set_xlabel('X (grid point)')
 ax.set_ylabel('Y (grid point)')
 cbar = fig.colorbar(im, ax=ax)
-cbar.set_label('pyekfmm-FD (ms)')
-plt.savefig('validation_grid_point.png', dpi=500)
+cbar.set_label('pyekfmm-pykonal (ms)')
+plt.savefig('pykonal_grid_point.png', dpi=500)
 plt.close()
