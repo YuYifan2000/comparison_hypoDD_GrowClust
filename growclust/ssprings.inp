@@ -31,7 +31,7 @@ IN/dt.cc
 *** Velocity Model / Travel Time Tables ***
 *******************************************
 * fin_vzmdl (input vz model file)
-IN/vzmodel.txt
+IN/velest_v.txt
 * fout_vzfine (output, interpolated vz model file)
 TT/vzfine.txt
 * fout_pTT (output travel time table, P phase)
