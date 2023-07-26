@@ -208,9 +208,9 @@ for i in range(0, len(o_sources)):
     #random_dep = sources[i][2]+(np.random.rand(1)[0]-0.5) * 1.2
     random_lat = o_sources[i][0]
     random_lon = o_sources[i][1]
-    random_dep = sources[i][2]
-    f.write(f"# 2000 12 13 15 00 1.00 {random_lat:6.3f} {random_lon:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {rank*source_num + i + 1} \n")
-    f2.write(f"# 2000 12 13 15 00 1.00 {o_sources[i][0]:5.3f} {o_sources[i][1]:6.3f} {sources[i][2]:4.2f} 1 0 0 0 {rank*source_num + i + 1} \n")
+    random_dep = o_sources[i][2]
+    f.write(f"# 2000 12 13 15 00 1.00 {random_lat:6.3f} {random_lon:6.3f} {random_dep[i][2]:4.2f} 1 0 0 0 {rank*source_num + i + 1} \n")
+    f2.write(f"# 2000 12 13 15 00 1.00 {o_sources[i][0]:5.3f} {o_sources[i][1]:6.3f} {o_sources[i][2]:4.2f} 1 0 0 0 {rank*source_num + i + 1} \n")
     st = time.time()
     tp = fmm.eikonal(p_vel_structure,xyz=sources[i],ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,nz],order=2).reshape(nx,ny,nz,order='F')
     tp = tp[:,:,0]

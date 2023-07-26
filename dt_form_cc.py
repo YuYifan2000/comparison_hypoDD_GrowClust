@@ -16,8 +16,8 @@ for line in Lines:
         station = int(content[0].strip('STA'))
         phase_type = content[4]
         if phase_type == 'P':
-            output.write(f'{content[0]} {(tt_p[event1][station]-tt_p[event2][station]):4.3f} 1.00 {phase_type} \n')
+            output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station]):4.3f} 1.00 {phase_type} \n')
         if phase_type == 'S':
-            output.write(f'{content[0]} {(tt_s[event1][station]-tt_s[event2][station]):4.3f} 1.00 {phase_type} \n')
+            output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]):4.3f} 1.00 {phase_type} \n')
 output.close()
 print('done cc')

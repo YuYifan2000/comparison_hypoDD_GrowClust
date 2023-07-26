@@ -49,11 +49,11 @@ ekfmm = tp[:,:,0]
 
 fig = plt.figure()
 ax = fig.add_subplot(111)
-im = ax.imshow((ekfmm-solver.traveltime.values[:,:,0])*1000, cmap='seismic', vmin=-40, vmax=40)
+im = ax.imshow((fd-solver.traveltime.values[:,:,0])*1000, cmap='seismic', vmin=-100, vmax=100)
 ax.set_title('At surface')
 ax.set_xlabel('X (grid point)')
 ax.set_ylabel('Y (grid point)')
 cbar = fig.colorbar(im, ax=ax)
-cbar.set_label('pyekfmm-pykonal (ms)')
+cbar.set_label('FD-pykonal (ms)')
 plt.savefig('pykonal_grid_point.png', dpi=500)
 plt.close()
