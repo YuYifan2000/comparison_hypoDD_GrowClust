@@ -47,7 +47,7 @@ TT/tt.sg
 * tt_dep0  tt_dep1  tt_ddep
    0.        34.       1.
 * tt_del0  tt_del1  tt_ddel
-   0.        200.      1.
+   0.        100.      1.
 *
 ******************************************
 ***** GrowClust Algorithm Parameters *****

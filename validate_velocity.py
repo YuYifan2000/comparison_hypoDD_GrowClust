@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.special import gamma
 from scipy.signal import detrend
-from scipy.fft import fft2, fftfreq, ifft2, fftn, ifftn, fftshift
+from scipy.fft import fft2, fftfreq, ifft2, fftn, ifftn, fftshift,fft
 import pyekfmm as fmm
 
 def von_Karman_3d_velo(nx,ny,nz,delta_x, delta_y, delta_z, ar, az, kappa, epsilon):
@@ -56,7 +56,7 @@ def genearte_velocity(nx,ny,nz,dx,dy,dz):
 
 	return p_vel_structure, origin
 
-'''
+
 p_velo = np.load('p_vel_array.npy')
 print(p_velo.shape)
 a = p_velo[1,:,2]
@@ -67,28 +67,29 @@ ax = fig.add_subplot(311)
 
 ax.set_ylabel('PSD')
 ax.set_yscale('log')
-ax.set_xlim([0.01,50])
+ax.set_xlim([0.5,80])
 ax.set_xscale('log')
 ax.plot(fftfreq(a.size,0.1)[:a.size//2]*np.pi*2, np.abs(fft(a))[:a.size//2]**2, label='y-direction', linewidth=1.5)
 ax.legend()
 a = p_velo[1,1,:]
-ax = fig.add_subplot(312)
+ax = fig.add_subplot(313)
 
 ax.set_ylabel('PSD')
 ax.set_yscale('log')
 ax.set_xscale('log')
-ax.set_xlim([0.01,50])
+ax.set_xlim([0.5,80])
+ax.set_xlabel('wavenumber radian/km')
 ax.plot(fftfreq(a.size,0.05)[:a.size//2]*np.pi*2, np.abs(fft(a))[:a.size//2]**2, label='z-direction', linewidth=1.5)
 ax.legend()
 a = p_velo[:,1,1]
-ax = fig.add_subplot(313)
+ax = fig.add_subplot(312)
 ax.set_yscale('log')
 ax.set_xscale('log')
 ax.plot(fftfreq(a.size,0.1)[:a.size//2]*np.pi*2, np.abs(fft(a))[:a.size//2]**2, label='x-direction', linewidth=1.5)
-ax.set_xlabel('wavenumber radian/km')
+
 ax.set_ylabel('PSD')
 ax.legend()
-ax.set_xlim([0.01,50])
+ax.set_xlim([0.5,80])
 plt.savefig('scatter_fft.png', dpi=500)
 plt.close()
 '''
@@ -131,3 +132,4 @@ ax.set_ylabel('Y(grid point)')
 
 plt.savefig('scatter_velocity.png', dpi=500)
 plt.close()
+'''

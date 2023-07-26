@@ -70,11 +70,10 @@ for line in Lines:
         f.write(f"{year[2:]}{mon.rjust(2,'0')}{day.rjust(2,'0')} {hour.rjust(2,' ')}{min.rjust(2,' ')} {sec:5.2f} {lat:7.4f}N {lon:8.4f}W {dep:8.4f} {mag:7.2f} 0\n")
         count = 0
     else:
-        if line.split()[3] == 'P':
-            count += 1
-            sta = line.split()[0]
-            tt = float(line.split()[1])
-            f.write(f"{sta.ljust(6,' ')} {tt:5.2f}")
+        count += 1
+        sta = line.split()[0]
+        tt = float(line.split()[1])
+        f.write(f"{sta.ljust(4,' ')}{line.split()[3]}0 {tt:5.2f}")
         if count == 6:
             count = 0
             f.write('\n')
