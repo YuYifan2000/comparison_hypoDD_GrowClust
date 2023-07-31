@@ -29,7 +29,7 @@ s2 = fmm.eikonal(s_vel_structure,xyz=source2,ax=[0,dx,nx],ay=[0,dy,ny],az=[0,dz,
 
 fig = plt.figure(figsize=[12,6])
 ax = fig.add_subplot(121)
-im = ax.imshow(p1[:,:,0]-p2[:,:,0], vmin=-1, vmax=1)
+im = ax.imshow(p1[:,:,0]-p2[:,:,0], vmin=-0.5, vmax=0.5)
 cbar = fig.colorbar(im, ax=ax, fraction=0.1,orientation="horizontal")
 cbar.set_label('Time(s)')
 ax.set_title('P traveltime difference')

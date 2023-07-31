@@ -14,15 +14,15 @@ station.dat
 *
 *--- output file selection
 * original locations:
-
+hypoDD.loc
 * relocations:
 hypoDD.reloc
 * station information:
-
+hypoDD.sta
 * residual information:
-
+hypoDD.res
 * source paramater information:
-
+hypoDD.src
 *
 *--- data type selection: 
 * IDAT:  0 = synthetics; 1= cross corr; 2= catalog; 3= cross & cat 
@@ -35,7 +35,7 @@ hypoDD.reloc
 * OBSCC:    min # of obs/pair for crosstime data (0= no clustering)
 * OBSCT:    min # of obs/pair for network data (0= no clustering)
 * OBSCC  OBSCT    
-    8     8   
+    8     0   
 *
 *--- solution control:
 * ISTART:  	1 = from single source; 2 = from network sources
@@ -70,8 +70,7 @@ hypoDD.reloc
 * TOP 
 0.0 2.5 5.0 7.5 10.0 12.5 15.0 17.5 20.0 22.5 25.0 27.5
 * VEL
-4.707 5.397 5.836 5.983 6.176 6.32 6.321 6.33 6.45 6.57 6.7 6.84
-* 4.80 5.45 5.82 5.92 6.02 6.12 6.22 6.33 6.45 6.57 6.70 6.84
+4.80 5.45 5.82 5.92 6.02 6.12 6.22 6.33 6.45 6.57 6.70 6.84
 *
 *--- event selection:
 * CID: 	cluster to be relocated (0 = all)

@@ -2,7 +2,6 @@ import numpy as np
 
 tt_p = np.load('tt_P.npy')
 tt_s = np.load('tt_S.npy')
-sources = np.load('source.npy')
 f = open('dt.ct','r')
 output = open('dt.cc', 'w')
 Lines = f.readlines()
@@ -16,12 +15,9 @@ for line in Lines:
         content = line.split()
         station = int(content[0].strip('STA'))
         phase_type = content[4]
-        cl1 = sources[event1-1, 3]
-        cl2 = sources[event2-1, 3]
-        if cl1 == cl2:
-            if phase_type == 'P':
-                output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station]):4.3f} 1.00 {phase_type} \n')
-            if phase_type == 'S':
-                output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]):4.3f} 1.00 {phase_type} \n')
+        if phase_type == 'P':
+            output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station]):4.3f} 1.00 {phase_type} \n')
+        if phase_type == 'S':
+            output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]):4.3f} 1.00 {phase_type} \n')
 output.close()
 print('done cc')
