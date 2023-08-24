@@ -8,22 +8,22 @@
 CALAVERAS area7 1.10.93 EK startmodell vers. 1.1  
 ***      starting model 1.1 based on Castillo and Ellsworth 1993, JGR
 ***  olat       olon   icoordsystem      zshift   itrial ztrial    ised
-  30.0     120.0      0            0.000      0     0.00       0
+  35.4     118.0      0            0.000      0     0.00       0
 ***
 *** neqs   nshot   rotate
-     040      0      0.0
+     200      0      0.0
 ***
 *** isingle   iresolcalc
-       0          0
+       0          1
 ***
 *** dmax    itopo    zmin     veladj    zadj   lowveloclay
-   1000.0     0     -0.20       0.20    5.00       0
+   200.0     0       0.05       0.20    5.00       0
 ***
 *** nsp    swtfac   vpvs       nmod
-     2      0.70    0.000        2
+     2      0.60    1.73        2
 ***
 ***   othet   xythet    zthet    vthet   stathet
-      0.01    0.01      0.01     01.     0.01
+      0.01    0.01      0.01     10.     0.1
 ***
 *** nsinv   nshcor   nshfix     iuseelev    iusestacorr
        0       0       0           0            0
@@ -35,7 +35,7 @@ CALAVERAS area7 1.10.93 EK startmodell vers. 1.1
        0         0         0         0         0         0         0
 ***
 *** delmin   ittmax   invertratio
-    0.010      06          04
+    0.010      30          3
 ***
 *** Modelfile:
 velest.mod
@@ -75,7 +75,7 @@ velest.OUT
 
 ***
 *** File with final hypocenters in *.cnv format:
-hypocenter.CNV
+hypocenter.cnv
 ***
 *** File with new station corrections:
 sta.OUT

@@ -19,7 +19,7 @@ for line in Lines:
         min = int(tmp[2:4])
         sec = float(line[12:17])
         lat = line.split()[-6][:-1]
-        lon = line.split()[-5][:-1]
+        lon = '-'+line.split()[-5][:-1]
         dep = line.split()[-4]
         output.write(f'# {year} {mon} {day} {hour} {min} {sec} {lat} {lon} {dep} 1 0 0 0 {idx}\n')
     else:
@@ -35,7 +35,7 @@ output.close()
 
 # form station.dat
 f = open('./station.dat', 'w+')
-stas = np.load('station.npy')
+stas = np.load('o_station.npy')
 num_sta = len(stas)
 for i in range(0, num_sta):
     sta = 'ST' + str(i)
