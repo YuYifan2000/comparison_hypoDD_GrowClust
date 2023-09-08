@@ -1,10 +1,5 @@
 .DS_Store
-*.txt
-*.npy
-*.pha
-hypoDD.*
-dt.*
+hypoDD.reloc.*
 *.log
-event.*
 *.png
 *.mp4
