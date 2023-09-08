@@ -7,7 +7,7 @@ from datetime import datetime
 from obspy.geodetics.base import gps2dist_azimuth
 matplotlib.use('agg')
 import matplotlib.colors as colors
-
+import matplotlib.ticker as ticker
 
 def project_profile(lat, lon):
     lat1 = 36.1
@@ -49,7 +49,7 @@ catalog_nll = pd.DataFrame(nll, columns=['LAT', 'LON', 'DEPTH'])
 
 
 # profile
-fig = plt.figure(figsize=[10,5], constrained_layout=True)
+fig = plt.figure(figsize=[9,4], constrained_layout=True)
 gs = gridspec.GridSpec(2, 3, figure=fig, hspace=0.001)
 
 map_dist = [0, 90]
@@ -59,7 +59,7 @@ title_fontsize = 8
 
 # original distribution
 ax = fig.add_subplot(gs[0,0])
-ax.set_title('Original Location', fontsize=title_fontsize, fontweight="bold")
+ax.set_title('True Location', fontsize=title_fontsize, fontweight="bold")
 for source in sources:
     dist = project_profile(source[0], source[1])
     ax.scatter(dist, source[2], s=size, c='k')
@@ -67,8 +67,11 @@ ax.set_xlim(map_dist)
 ax.set_ylim(map_dep)
 ax.set_xlabel('Distance (km)', labelpad=0.05, fontsize=8)
 ax.set_ylabel('Depth (km)', fontsize=8, labelpad=0.1)
-ax.axes.get_xaxis().set_ticklabels(np.linspace(map_dist[0], map_dist[1], 5), fontsize=6)
-ax.axes.get_yaxis().set_ticklabels(np.linspace(map_dep[1], map_dep[0], 4), fontsize=6)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(20))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+ax.yaxis.set_tick_params(labelsize=6)
+ax.xaxis.set_tick_params(labelsize=6)
+#ax.axes.get_xaxis().set_ticklabels([])
 
 # hypoDD
 ax = fig.add_subplot(gs[0,1])
@@ -76,9 +79,13 @@ ax.set_title('HypoDD', fontsize=title_fontsize, fontweight="bold")
 for i in range(0, len(catalog_dd)):
     dist = project_profile(catalog_dd.iloc[i]['LAT'], catalog_dd.iloc[i]['LON'])
     #ax.scatter(dist, catalog_dd.iloc[i]['DEPTH'], s=size, c='k')
-    ax.scatter(dist, catalog_dd.iloc[i]['DEPTH'], s=size, c=catalog_dd.iloc[i]['CID'], cmap='Dark2', norm=colors.Normalize(vmin=1, vmax=5))
+    ax.scatter(dist, catalog_dd.iloc[i]['DEPTH'], s=size, c=catalog_dd.iloc[i]['CID'], cmap='Dark2', norm=colors.Normalize(vmin=1, vmax=4))
 ax.set_xlim(map_dist)
 ax.set_ylim(map_dep)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(20))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+ax.yaxis.set_tick_params(labelsize=6)
+ax.xaxis.set_tick_params(labelsize=6)
 ax.axes.get_xaxis().set_ticklabels([])
 ax.axes.get_yaxis().set_ticklabels([])
 
@@ -88,9 +95,13 @@ ax.set_title('GrowClust',fontsize=title_fontsize, fontweight="bold")
 for i in range(0, len(catalog_gc)):
     dist = project_profile(catalog_gc.iloc[i]['latR'], catalog_gc.iloc[i]['lonR'])
     #ax.scatter(dist, catalog_gc.iloc[i]['depR'], s=size, c='k')
-    ax.scatter(dist, catalog_gc.iloc[i]['depR'], s=size, c=catalog_gc.iloc[i]['cID'], cmap='Dark2', norm=colors.Normalize(vmin=1, vmax=20))
+    ax.scatter(dist, catalog_gc.iloc[i]['depR'], s=size, c=catalog_gc.iloc[i]['cID'], cmap='tab10', norm=colors.Normalize(vmin=1, vmax=20))
 ax.set_xlim(map_dist)
 ax.set_ylim(map_dep)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(20))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+ax.yaxis.set_tick_params(labelsize=6)
+ax.xaxis.set_tick_params(labelsize=6)
 ax.axes.get_xaxis().set_ticklabels([])
 ax.axes.get_yaxis().set_ticklabels([])
 
@@ -102,6 +113,10 @@ for i in range(0, len(catalog_vele)):
     ax.scatter(dist, catalog_vele.iloc[i]['DEPTH'], s=size, c='k')
 ax.set_xlim(map_dist)
 ax.set_ylim(map_dep)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(20))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+ax.yaxis.set_tick_params(labelsize=6)
+ax.xaxis.set_tick_params(labelsize=6)
 ax.axes.get_xaxis().set_ticklabels([])
 ax.axes.get_yaxis().set_ticklabels([])
 
@@ -113,6 +128,10 @@ for i in range(0, len(catalog_hypoinverse)):
     ax.scatter(dist, catalog_hypoinverse.iloc[i]['DEPTH'], s=size, c='k')
 ax.set_xlim(map_dist)
 ax.set_ylim(map_dep)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(20))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+ax.yaxis.set_tick_params(labelsize=6)
+ax.xaxis.set_tick_params(labelsize=6)
 ax.axes.get_xaxis().set_ticklabels([])
 ax.axes.get_yaxis().set_ticklabels([])
 
@@ -125,6 +144,10 @@ for i in range(len(nll_lon)):
     ax.scatter(dist, nll_dep[i], s=size, c='k')
 ax.set_xlim(map_dist)
 ax.set_ylim(map_dep)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(20))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+ax.yaxis.set_tick_params(labelsize=6)
+ax.xaxis.set_tick_params(labelsize=6)
 ax.axes.get_xaxis().set_ticklabels([])
 ax.axes.get_yaxis().set_ticklabels([])
 

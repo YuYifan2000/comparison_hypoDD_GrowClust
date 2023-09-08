@@ -33,7 +33,7 @@ nll = np.stack((np.array(nll_lat).T, np.array(nll_lon).T, np.array(nll_dep).T) ,
 catalog_nll = pd.DataFrame(nll, columns=['LAT', 'LON', 'DEPTH'])
 
 # mapview containing six
-fig = plt.figure(figsize=[12,6], constrained_layout=True)
+fig = plt.figure(figsize=[9,7], constrained_layout=True)
 gs = gridspec.GridSpec(2, 3, figure=fig, hspace=0.01)
 
 map_lat = [35.47, 36.13]
@@ -44,11 +44,11 @@ title_fontsize = 8
 
 # original distribution
 ax = fig.add_subplot(gs[0,0])
-ax.set_title('Original Location', fontsize=title_fontsize, fontweight="bold")
-ax.scatter(stations[:,1], stations[:,0], s=7, marker='v', alpha=0.7)
-ax.plot([-117.9, -117.32], [36.1, 35.5], linestyle='--', linewidth=2, marker='x', c=(140./256,21./256,21./256), dashes=(10,60))
-ax.text(-117.9, 36.1, 'A', fontsize=6, fontweight='bold', rotation=45)
-ax.text(-117.32, 35.51, 'A\'', fontsize=6, fontweight='bold', rotation=45)
+ax.set_title('True Location', fontsize=title_fontsize, fontweight="bold")
+#ax.scatter(stations[:,1], stations[:,0], s=7, marker='v', alpha=0.7)
+ax.plot([-117.9, -117.32], [36.1, 35.5], linestyle='--', linewidth=2, marker='x', c=(140./255,21./255,21./255), dashes=(10,55))
+ax.text(-117.9, 36.1, 'A', fontsize=7, fontweight='bold', rotation=45)
+ax.text(-117.32, 35.51, 'A\'', fontsize=7, fontweight='bold', rotation=45)
 ax.scatter(sources[:, 1], sources[:,0], s=size, c='k')
 ax.set_xlim(map_lon)
 ax.set_ylim(map_lat)
@@ -64,7 +64,7 @@ ax.yaxis.set_tick_params(labelsize=6)
 ax = fig.add_subplot(gs[0,1])
 ax.set_title('HypoDD', fontsize=title_fontsize, fontweight="bold")
 #ax.scatter(catalog_dd['LON'], catalog_dd['LAT'], s=size, c='k')
-ax.scatter(catalog_dd['LON'], catalog_dd['LAT'], s=size, c=catalog_dd['CID'], cmap='Dark2', norm=colors.Normalize(vmin=1, vmax=5))
+ax.scatter(catalog_dd['LON'], catalog_dd['LAT'], s=size, c=catalog_dd['CID'], cmap='Dark2', norm=colors.Normalize(vmin=1, vmax=4))
 ax.set_xlim(map_lon)
 ax.set_ylim(map_lat)
 ax.axes.get_xaxis().set_ticklabels([])
@@ -75,7 +75,7 @@ ax.axes.get_yaxis().set_ticklabels([])
 ax = fig.add_subplot(gs[0,2])
 ax.set_title('GrowClust', fontsize=title_fontsize, fontweight="bold")
 #ax.scatter(catalog_gc['lonR'], catalog_gc['latR'], s=size, c='k')
-ax.scatter(catalog_gc['lonR'], catalog_gc['latR'], s=size, c=catalog_gc['cID'], cmap='Dark2', norm=colors.Normalize(vmin=1, vmax=20))
+ax.scatter(catalog_gc['lonR'], catalog_gc['latR'], s=size, c=catalog_gc['cID'], cmap='tab10', norm=colors.Normalize(vmin=1, vmax=20))
 ax.set_xlim(map_lon)
 ax.set_ylim(map_lat)
 ax.axes.get_xaxis().set_ticklabels([])

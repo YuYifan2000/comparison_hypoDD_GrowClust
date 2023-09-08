@@ -102,3 +102,5 @@ h_df = pd.DataFrame(h_data, columns=['velest', 'NonLinLoc', 'hypoinverse', 'hypo
 z_df = pd.DataFrame(z_data, columns=['velest', 'NonLinLoc', 'hypoinverse', 'hypoDD', 'growclust'])
 print(h_df.mean())
 print(z_df.mean())
+h_df.to_csv('absolute_error_hori.csv', index=False)
+z_df.to_csv('absolute_error_depth.csv', index=False)
