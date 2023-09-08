@@ -12,7 +12,7 @@ echo "Do the event Location "
 NLLoc ./nlloc_sample.in
 #echo "Plot the first event location with GMT"
 #echo "Plot the combined locations with GMT"
-#LocSum loc/alaska.sum.grid0.loc 1 loc/alaska "loc/alaska.*.*.grid0.loc"
+LocSum loc/ridgecrest.sum.grid0.loc 1 loc/sum "loc/ridgecrest.*.*.grid0.loc"
 END=`date +%s`
 DIFF3=$(( $END - $START ))
 echo "time:$DIFF3 s"

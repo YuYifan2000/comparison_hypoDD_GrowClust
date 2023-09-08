@@ -12,16 +12,24 @@ for line in Lines:
         event1 = int(line.split()[1])
         event2 = int(line.split()[2])
         if source[event1-1, 3] == source[event2-1, 3]:
-            output.write(f'# {event1}  {event2}   0\n')
             flag = 1
+        output.write(f'# {event1}  {event2}   0\n')
     else:
         if flag == 1:
             content = line.split()
             station = int(content[0].strip('ST'))
             phase_type = content[4]
             if phase_type == 'P':
-                output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station]):4.3f} 1.00 {phase_type} \n')
+                output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)):4.3f} 1.00 {phase_type} \n')
             if phase_type == 'S':
-                output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]):4.3f} 1.00 {phase_type} \n')
+                output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)):4.3f} 1.00 {phase_type} \n')
+        else:
+            content = line.split()
+            station = int(content[0].strip('ST'))
+            phase_type = content[4]
+            if phase_type == 'P':
+                output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station]+ np.random.laplace(0, 0.011,)):4.3f} 0.30 {phase_type} \n')
+            if phase_type == 'S':
+                output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)):4.3f} 0.30 {phase_type} \n')
 output.close()
 

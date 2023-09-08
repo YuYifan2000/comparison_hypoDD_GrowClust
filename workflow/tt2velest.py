@@ -49,7 +49,7 @@ for i in range(0, len(sources)):
         prob = np.random.rand()
         if prob < p_prob:
             count += 1
-            tt = tt_p[i,j] + np.random.normal(0, 0.02,)# long tail==double exponential?
+            tt = tt_p[i,j] + np.random.laplace(0, 0.02,)# long tail==double exponential?
             f.write(f"{sta.ljust(4,' ')}P0 {tt:5.2f}")
         if count == 6:
             count = 0
@@ -58,7 +58,7 @@ for i in range(0, len(sources)):
         prob = np.random.rand()
         if prob < s_prob:
             count += 1
-            tt = tt_s[i,j] + np.random.laplace(0, 0.05,)
+            tt = tt_s[i,j] + np.random.laplace(0, 0.04,)
             f.write(f"{sta.ljust(4,' ')}S0 {tt:5.2f}")
         if count == 6:
             count = 0

@@ -17,9 +17,11 @@ for line in Lines:
         day = int(line[4:6])
         tmp = line[7:11]
         hour = int(tmp[:2])
-        min = int(tmp[2:4])
+#        min = int(tmp[2:4])
+        min = 0
         sec = float(line[12:17])
         eventtime = datetime.strptime(f'{year},{mon},{day}T{hour}:{min}:{sec}', '%Y,%m,%dT%H:%M:%S.%f')
+        eventtime = eventtime + timedelta(minutes=idx)
         output.write('\n')
     else:
         length = len(line)

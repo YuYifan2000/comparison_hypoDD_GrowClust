@@ -17,7 +17,7 @@ catalog_vele = pd.read_csv("../hypoDD.loc", sep="\s+", names=["ID", "LAT", "LON"
 catalog_hypoinverse = pd.read_csv("../catOut.sum", sep="\s+")
 catalog_hypoinverse["time"] = (catalog_hypoinverse['DATE']+catalog_hypoinverse["TIME"]).apply(lambda x: datetime.strptime(x, "%Y/%m/%d%H:%M"))
 # NLL
-f = open('../NLL/loc/alaska.sum.grid0.loc.hyp', 'r')
+f = open('../NLL/loc/sum.hyp', 'r')
 Lines = f.readlines()
 f.close()
 nll_lat = []

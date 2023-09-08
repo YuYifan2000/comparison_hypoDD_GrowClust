@@ -2,10 +2,10 @@
 #SBATCH --job-name=multi_cores
 #SBATCH --output=%j.out
 #SBATCH --error=%j.err
-#SBATCH --time=0:30:00
+#SBATCH --time=41:00:00
 #SBATCH -p serc
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=20
+#SBATCH --ntasks-per-node=25
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=16GB
 

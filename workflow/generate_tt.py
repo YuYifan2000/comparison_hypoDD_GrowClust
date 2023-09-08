@@ -11,23 +11,22 @@ size = comm.Get_size()
 
 # set up basic parameters
 nz = 401
-nx = 351
-ny = 501
-dx = 0.2
-dz = 0.05
-dy = 0.2
+nx = 701
+ny = 1001
+dx = 100
+dz = 50
+dy = 100
 
 print(f'Grid Range: in x direction {(nx-1)*dx} km, in y direction {(ny-1)*dy} km, in z direction {(nz-1)*dz} km')
 
 # load or build up velocity
-p_vel_structure = np.load('p_vel.npy')[::2,::2,:]
-s_vel_structure = np.load('s_vel.npy')[::2,::2,:]
+p_vel_structure = np.load('p_vel.npy')
+s_vel_structure = np.load('s_vel.npy')
 
 # set up stations
-stations = np.load('station.npy') / 1000.
+stations = np.load('station.npy')
 # set up sources
-shared_sources = np.load('source.npy')[:20]
-shared_sources[:,0:3] = shared_sources[:,0:3] / 1000.
+shared_sources = np.load('source.npy')
 source_num = int(len(shared_sources) / size)
 sources = shared_sources[rank*source_num:(rank+1)*source_num]
 # change the sources to earth coordinates

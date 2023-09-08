@@ -1,12 +1,16 @@
 import numpy as np
 from datetime import datetime, timedelta
+flag = 0
 in_file = open("hypocenter.CNV", "r")
 Lines = in_file.readlines()
 in_file.close()
 out_file = open("hypoInput.arc", "w")
 for line in Lines:
     if line[0] == ' ':
-        out_file.write('\n')
+        if flag != 0:
+            out_file.write('\n')
+        else:
+            flag = 1
         south = ' '
         east = ' '
         hour = line.split()[1]

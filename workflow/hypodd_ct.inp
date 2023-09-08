@@ -53,8 +53,8 @@ hypoDD.src
 * DAMP:    		damping (for lsqr only) 
 *       ---  CROSS DATA ----- ----CATALOG DATA ----
 * NITER WTCCP WTCCS WRCC WDCC WTCTP WTCTS WRCT WDCT DAMP
-    4     1.0   0.8  -9  -9  -9  -9  -9  -9  35
-    4     1.0   0.8  6  -9    -9  -9  -9  -9  30
+    4     1.0   0.8  -9  -9  -9  -9  -9  -9  45
+    4     1.0   0.8  6  -9    -9  -9  -9  -9  40
     4    1.0   0.8   4  -9  -9  -9  -9  -9  30
 *    4    1.0   0.8   4   -9  0.01  0.01  4  -9  25
 *   3    1.0   0.8   6  0.5  -9  -9  -9  -9  70
@@ -70,7 +70,7 @@ hypoDD.src
 * TOP 
 0.0 1.0 2.0 3.0 4.0 5.0 6.0 7.0 8.0 30.0
 * VEL
-4.490 4.585 4.848 5.291 5.657 5.658 6.596 6.911 6.912 7.800
+4.470 4.471 4.755 5.371 5.670 5.671 6.569 6.938 6.969 7.800
 *
 *--- event selection:
 * CID: 	cluster to be relocated (0 = all)
