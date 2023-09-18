@@ -17,8 +17,8 @@ LAYER    8.0     6.969   0    4.082   0    2.76    0
 LAYER    30.0    7.80    0    4.50    0    3.26    0
 
 
-GTFILES  ./model/layer  ./time/layer P	  # uncomment to generate P travel times
-#GTFILES  ./model/layer  ./time/layer S	 # uncomment to generate S travel times
+#GTFILES  ./model/layer  ./time/layer P	  # uncomment to generate P travel times
+GTFILES  ./model/layer  ./time/layer S	 # uncomment to generate S travel times
 
 GTMODE GRID2D ANGLES_YES
 

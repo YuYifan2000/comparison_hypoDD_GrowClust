@@ -45,7 +45,7 @@ TT/tt.sg
 * vpvs_factor  rayparam_min (-1 = default)
   1.731             0.0
 * tt_dep0  tt_dep1  tt_ddep
-   0.        34.       0.5
+   0.        24.       0.4
 * tt_del0  tt_del1  tt_ddel
    0.        100.      0.5
 *
@@ -53,7 +53,7 @@ TT/tt.sg
 ***** GrowClust Algorithm Parameters *****
 ******************************************
 * rmin  delmax rmsmax 
-   0.6    80    0.2
+   0.75    80    0.2
 * rpsavgmin, rmincut  ngoodmin   iponly 
     0          0         0        0
 *

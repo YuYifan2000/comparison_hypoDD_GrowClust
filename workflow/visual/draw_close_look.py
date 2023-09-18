@@ -185,7 +185,7 @@ ax.yaxis.set_tick_params(labelsize=6)
 ax.xaxis.set_tick_params(labelsize=6)
 ax.set_xlabel('Distance (km)', labelpad=0.1, fontsize=8)
 ax.axes.get_yaxis().set_ticklabels([])
-plt.savefig('./profile_north_part.pdf', dpi=300, transparent = True)
+plt.savefig('./profile_north_part.png', dpi=300, transparent = True)
 plt.close()
 
 

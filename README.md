@@ -12,6 +12,7 @@ shuffle_source.py, generate_tt.py, tt2velest.py, velest2\*.py, event2evlist.py, 
 
 Sorry it is a little bit messy, I will sort out soon.
 ## traveltime dataset
+Sep.18: We update our results in NonLinLoc with smaller step size to improve the performance. \
 If you are willing to run the results over Yifan's poster at 2023 SCEC Annual Meeting, it is in the dataset/ directory.\
 'o_source.npy','o_station.npy' are the sources and stations locations.\
 'tt_P.npy','tt_S.npy' storage each source's traveltime on each station based on the index order.\

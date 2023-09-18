@@ -32,19 +32,17 @@ catalog_vele = pd.read_csv("../hypoDD.loc", sep="\s+", names=["ID", "LAT", "LON"
 catalog_hypoinverse = pd.read_csv("../catOut.sum", sep="\s+")
 catalog_hypoinverse["time"] = (catalog_hypoinverse['DATE']+catalog_hypoinverse["TIME"]).apply(lambda x: datetime.strptime(x, "%Y/%m/%d%H:%M"))
 # NLL
-f = open('../NLL/loc/sum.hyp', 'r')
-Lines = f.readlines()
+f = open('../NLL/loc/ridgecrest.sum.grid0.loc.arc', 'r')
+Lines  = f.readlines()
 f.close()
 nll_lat = []
 nll_lon = []
 nll_dep = []
 for line in Lines:
-    if 'GEOGRAPHIC' in line:
-        nll_lat.append(float(line.split()[9]))
-        nll_lon.append(float(line.split()[11]))
-        nll_dep.append(float(line.split()[13]))
-nll = np.stack((np.array(nll_lat).T, np.array(nll_lon).T, np.array(nll_dep).T) , axis=1)
-catalog_nll = pd.DataFrame(nll, columns=['LAT', 'LON', 'DEPTH'])
+    if (line[:2] != 'ST') & (line!='\n'):
+        nll_lat.append(float(line[16:18])+float(line[19:23])/6000.)
+        nll_lon.append(-(float(line[23:26])+float(line[27:31])/6000.))
+        nll_dep.append(float(line[32:36])/100.)
 
 
 
@@ -151,5 +149,5 @@ ax.xaxis.set_tick_params(labelsize=6)
 ax.axes.get_xaxis().set_ticklabels([])
 ax.axes.get_yaxis().set_ticklabels([])
 
-plt.savefig('./profile.pdf', transparent=True, dpi=300)
+plt.savefig('./profile.png', transparent=True, dpi=300)
 plt.close()
