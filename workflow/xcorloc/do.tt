@@ -1,0 +1,52 @@
+#!/bin/tcsh
+
+~/opt/XCORLOC_1.0/SRC/TT/vzfillin << !
+vzmodel.txt
+vz.f
+1.732         !Vp/Vs ratio if Vs=0 in input
+0.0  30.0    !min and max depth
+0.5           !dz spacing for output
+!
+~/opt/XCORLOC_1.0/SRC/TT/deptable << !
+vz.f
+1                    ! first column: 1=z, 2=r
+9999                 ! maximum depth (9999 for none)
+1                    ! Source depths:  (1) Range, (2) Exact
+0.0 22 0.5          ! source dep1,dep2,dep3
+1                    ! 1=P, 2=S
+5000                 ! number of rays to compute
+.133                 ! min p at long range (.133 = no Pn, .238 = Sn)
+1                    ! Output type:  1=km+sec,  2=deg+minutes
+none
+0 100 1.0            ! del1,del2,del3
+tt.pg
+ang.pg
+ray.pg
+eta.pg
+!
+
+~/opt/XCORLOC_1.0/SRC/TT/deptable << !
+vz.f
+1                    ! first column: 1=z, 2=r
+9999                 ! maximum depth (9999 for none)
+1                    ! Source depths:  (1) Range, (2) Exact
+0.0 22 0.5          ! source dep1,dep2,dep3
+2                    ! 1=P, 2=S
+5000                 ! number of rays to compute
+.238                 ! min p at long range (.133 = no Pn, .238 = Sn)
+1                    ! Output type:  1=km+sec,  2=deg+minutes
+none
+0 100 1.0            ! del1,del2,del3
+tt.sg
+ang.sg
+ray.sg
+eta.sg
+!
+
+rm -f ang.pg
+rm -f ray.pg
+rm -f eta.pg
+rm -f ang.sg
+rm -f ray.sg
+rm -f eta.sg
+

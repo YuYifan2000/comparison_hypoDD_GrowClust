@@ -5,7 +5,7 @@
 ***   leave the line BLANK. Do NOT delete!)
 ***
 *** next line contains a title (printed on output):
-CALAVERAS area7 1.10.93 EK startmodell vers. 1.1  
+Ridgecrest Synthetic Test Y.Y.
 ***      starting model 1.1 based on Castillo and Ellsworth 1993, JGR
 ***  olat       olon   icoordsystem      zshift   itrial ztrial    ised
   35.4     118.0      0            0.000      0     0.00       0
@@ -20,7 +20,7 @@ CALAVERAS area7 1.10.93 EK startmodell vers. 1.1
    200.0     0       0.05       0.20    5.00       0
 ***
 *** nsp    swtfac   vpvs       nmod
-     2      0.60    1.73        2
+     2      0.70    1.73        2
 ***
 ***   othet   xythet    zthet    vthet   stathet
       0.01    0.01      0.01     10.     0.1
@@ -38,7 +38,7 @@ CALAVERAS area7 1.10.93 EK startmodell vers. 1.1
     0.010      30          3
 ***
 *** Modelfile:
-velest.mod
+shelly.mod
 ***
 *** Stationfile:
 velest.sta

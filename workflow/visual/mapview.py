@@ -9,13 +9,26 @@ import matplotlib.colors as colors
 
 stations = np.load('../o_station.npy')
 sources = np.load('../o_source.npy')
-catalog_gc = pd.read_csv(f"../out.growclust_cat", sep="\s+", names=["yr","mon","day", "hr","min","sec","evid","latR","lonR","depR","mag","qID","cID","nbrach","qnpair","qndiffP","qndiffS","rmsP","rmsS","eh","ez","et","latC","lonC","depC"])
-catalog_dd = pd.read_csv(f"../hypoDD.reloc", sep="\s+", names=["ID", "LAT", "LON", "DEPTH", "X", "Y", "Z", "EX", "EY", "EZ", "YR", "MO", "DY", "HR", "MI", "SC", "MAG", "NCCP", "NCCS", "NCTP",
+catalog_gc = pd.read_csv(f"../growclust/out.growclust_cat", sep="\s+", names=["yr","mon","day", "hr","min","sec","evid","latR","lonR","depR","mag","qID","cID","nbrach","qnpair","qndiffP","qndiffS","rmsP","rmsS","eh","ez","et","latC","lonC","depC"])
+catalog_dd = pd.read_csv(f"../hypodd/hypoDD.reloc", sep="\s+", names=["ID", "LAT", "LON", "DEPTH", "X", "Y", "Z", "EX", "EY", "EZ", "YR", "MO", "DY", "HR", "MI", "SC", "MAG", "NCCP", "NCCS", "NCTP",
 "NCTS", "RCC", "RCT", "CID"])
-catalog_vele = pd.read_csv("../hypoDD.loc", sep="\s+", names=["ID", "LAT", "LON", "DEPTH", "X", "Y", "Z", "EX", "EY", "EZ", "YR", "MO", "DY", "HR", "MI", "SC", "MAG", "NCCP", "NCCS", "NCTP",
-"NCTS", "RCC", "RCT", "CID"])
+
+velest_lat = []
+velest_lon = []
+velest_dep = []
+f = open('../velest/hypocenter_.CNV', 'r')
+lines = f.readlines()
+f.close()
+for line in lines:
+    if line[0] == ' ':
+        velest_lat.append(float(line.split()[3][:-1]))
+        velest_lon.append(-float(line.split()[4][:-1]))
+        velest_dep.append(float(line.split()[5]))
+velest = np.stack((np.array(velest_lat).T, np.array(velest_lon).T, np.array(velest_dep).T), axis=1)
+catalog_vele = pd.DataFrame(velest, columns=['LAT', 'LON', 'DEPTH'])
+
 # hypoinverse
-catalog_hypoinverse = pd.read_csv("../catOut.sum", sep="\s+")
+catalog_hypoinverse = pd.read_csv("../hypoinverse/catOut.sum", sep="\s+")
 catalog_hypoinverse["time"] = (catalog_hypoinverse['DATE']+catalog_hypoinverse["TIME"]).apply(lambda x: datetime.strptime(x, "%Y/%m/%d%H:%M"))
 # NLL
 f = open('../NLL/loc/ridgecrest.sum.grid0.loc.arc', 'r')
@@ -32,9 +45,15 @@ for line in Lines:
 nll = np.stack((np.array(nll_lat).T, np.array(nll_lon).T, np.array(nll_dep).T) , axis=1)
 catalog_nll = pd.DataFrame(nll, columns=['LAT', 'LON', 'DEPTH'])
 
+# for xcorloc
+catalog_xcloc = pd.read_csv(f"../xcorloc/out.loc_xcor", sep="\s+", names=["qID", "yr","mon","day", "hr","min","sec","lat","lon","dep","mag","pair", "pick_used", "erx", "ery", "erz", "ert", "rms_phs", "rms_dif", "type"])
+
+# for hyposvi
+catalog_hyposvi = pd.read_csv(f"../hyposvi/data/catalog_svi9.csv_svi")
+
 # mapview containing six
-fig = plt.figure(figsize=[9,7], constrained_layout=True)
-gs = gridspec.GridSpec(2, 3, figure=fig, hspace=0.01)
+fig = plt.figure(figsize=[11,7], constrained_layout=True)
+gs = gridspec.GridSpec(2, 4, figure=fig, hspace=0.01)
 
 map_lat = [35.47, 36.13]
 map_lon = [-117.91, -117.305]
@@ -63,8 +82,8 @@ ax.yaxis.set_tick_params(labelsize=6)
 # hypoDD
 ax = fig.add_subplot(gs[0,1])
 ax.set_title('HypoDD', fontsize=title_fontsize, fontweight="bold")
-#ax.scatter(catalog_dd['LON'], catalog_dd['LAT'], s=size, c='k')
-ax.scatter(catalog_dd['LON'], catalog_dd['LAT'], s=size, c=catalog_dd['CID'], cmap='Dark2', norm=colors.Normalize(vmin=1, vmax=4))
+ax.scatter(catalog_dd['LON'], catalog_dd['LAT'], s=size, c='k')
+#ax.scatter(catalog_dd['LON'], catalog_dd['LAT'], s=size, c=catalog_dd['CID'], cmap='Dark2', norm=colors.Normalize(vmin=1, vmax=4))
 ax.set_xlim(map_lon)
 ax.set_ylim(map_lat)
 ax.axes.get_xaxis().set_ticklabels([])
@@ -74,8 +93,8 @@ ax.axes.get_yaxis().set_ticklabels([])
 # growclust
 ax = fig.add_subplot(gs[0,2])
 ax.set_title('GrowClust', fontsize=title_fontsize, fontweight="bold")
-#ax.scatter(catalog_gc['lonR'], catalog_gc['latR'], s=size, c='k')
-ax.scatter(catalog_gc['lonR'], catalog_gc['latR'], s=size, c=catalog_gc['cID'], cmap='tab10', norm=colors.Normalize(vmin=1, vmax=20))
+ax.scatter(catalog_gc['lonR'], catalog_gc['latR'], s=size, c='k')
+#ax.scatter(catalog_gc['lonR'], catalog_gc['latR'], s=size, c=catalog_gc['cID'], cmap='tab10', norm=colors.Normalize(vmin=1, vmax=20))
 ax.set_xlim(map_lon)
 ax.set_ylim(map_lat)
 ax.axes.get_xaxis().set_ticklabels([])
@@ -111,7 +130,27 @@ ax.set_ylim(map_lat)
 ax.axes.get_xaxis().set_ticklabels([])
 ax.axes.get_yaxis().set_ticklabels([])
 
+# Xcorloc
+ax = fig.add_subplot(gs[0,3])
+ax.set_title('XCorLoc', fontsize=title_fontsize, fontweight="bold")
+ax.scatter(catalog_xcloc['lon'], catalog_xcloc['lat'], s=size, c='k')
+ax.set_xlim(map_lon)
+ax.set_ylim(map_lat)
+ax.axes.get_xaxis().set_ticklabels([])
+ax.axes.get_yaxis().set_ticklabels([])
+
+
+# hyposvi
+ax = fig.add_subplot(gs[1,3])
+ax.set_title('HypoSVI', fontsize=title_fontsize, fontweight="bold")
+ax.scatter(catalog_hyposvi['longitude'], catalog_hyposvi['latitude'], s=size,c ='k')
+ax.set_xlim(map_lon)
+ax.set_ylim(map_lat)
+ax.axes.get_xaxis().set_ticklabels([])
+ax.axes.get_yaxis().set_ticklabels([])
+
 
 #plt.tight_layout()
-plt.savefig('./mapview.png', dpi=300, transparent=True)
+plt.savefig('./mapview.png', dpi=300)
+#plt.savefig('./mapview.png', dpi=300, transparent=True)
 plt.close()

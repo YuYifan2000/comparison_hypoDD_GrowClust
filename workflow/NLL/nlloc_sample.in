@@ -5,15 +5,15 @@ VGOUT  ./model/layer
 VGTYPE P
 VGTYPE S
 VGGRID  2 18001 2001  0.0 0.0 0.0  0.01 0.01 0.01  SLOW_LEN 
-LAYER    0.0     4.47    0    2.70   0    2.52    0
-LAYER    1.0     4.471   0    2.731   0    2.55    0
-LAYER    2.0     4.755   0    2.836   0    2.58    0
-LAYER    3.0     5.371   0    3.126   0    2.60    0
-LAYER    4.0     5.670   0    3.369   0    2.61    0
-LAYER    5.0     5.671   0    3.370   0    2.63    0
-LAYER    6.0     6.569   0    3.807   0    2.69    0
-LAYER    7.0     6.938   0    4.081   0    2.72    0
-LAYER    8.0     6.969   0    4.082   0    2.76    0
+LAYER    0.0     4.54    0    2.727   0    2.52    0
+LAYER    1.0     4.587   0    2.742   0    2.55    0
+LAYER    2.0     4.662   0    2.904   0    2.58    0
+LAYER    3.0     5.309   0    2.905   0    2.60    0
+LAYER    4.0     5.659   0    3.418   0    2.61    0
+LAYER    5.0     5.709   0    3.419   0    2.63    0
+LAYER    6.0     6.647   0    3.825   0    2.69    0
+LAYER    7.0     6.942   0    4.070   0    2.72    0
+LAYER    8.0     6.943   0    4.071   0    2.76    0
 LAYER    30.0    7.80    0    4.50    0    3.26    0
 
 
@@ -28,7 +28,7 @@ GT_PLFD  1.0e-3  0
 
 LOCSIG NonLinLoc - Yifan Yu
 
-LOCCOM 2023-8-21 test
+LOCCOM 2023-10-4 test
 
 LOCFILES ./obs/phase.obs NLLOC_OBS  ./time/layer  ./loc/ridgecrest
 

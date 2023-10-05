@@ -23,13 +23,24 @@ def project_profile(lat, lon):
 
 stations = np.load('../o_station.npy')
 sources = np.load('../o_source.npy')
-catalog_gc = pd.read_csv(f"../out.growclust_cat", sep="\s+", names=["yr","mon","day", "hr","min","sec","evid","latR","lonR","depR","mag","qID","cID","nbrach","qnpair","qndiffP","qndiffS","rmsP","rmsS","eh","ez","et","latC","lonC","depC"])
-catalog_dd = pd.read_csv(f"../hypoDD.reloc", sep="\s+", names=["ID", "LAT", "LON", "DEPTH", "X", "Y", "Z", "EX", "EY", "EZ", "YR", "MO", "DY", "HR", "MI", "SC", "MAG", "NCCP", "NCCS", "NCTP",
+catalog_gc = pd.read_csv(f"../growclust/out.growclust_cat", sep="\s+", names=["yr","mon","day", "hr","min","sec","evid","latR","lonR","depR","mag","qID","cID","nbrach","qnpair","qndiffP","qndiffS","rmsP","rmsS","eh","ez","et","latC","lonC","depC"])
+catalog_dd = pd.read_csv(f"../hypodd/hypoDD.reloc", sep="\s+", names=["ID", "LAT", "LON", "DEPTH", "X", "Y", "Z", "EX", "EY", "EZ", "YR", "MO", "DY", "HR", "MI", "SC", "MAG", "NCCP", "NCCS", "NCTP",
 "NCTS", "RCC", "RCT", "CID"])
-catalog_vele = pd.read_csv("../hypoDD.loc", sep="\s+", names=["ID", "LAT", "LON", "DEPTH", "X", "Y", "Z", "EX", "EY", "EZ", "YR", "MO", "DY", "HR", "MI", "SC", "MAG", "NCCP", "NCCS", "NCTP",
-"NCTS", "RCC", "RCT", "CID"])
+velest_lat = []
+velest_lon = []
+velest_dep = []
+f = open('../velest/hypocenter_.CNV', 'r')
+lines = f.readlines()
+f.close()
+for line in lines:
+    if line[0] == ' ':
+        velest_lat.append(float(line.split()[3][:-1]))
+        velest_lon.append(-float(line.split()[4][:-1]))
+        velest_dep.append(float(line.split()[5]))
+velest = np.stack((np.array(velest_lat).T, np.array(velest_lon).T, np.array(velest_dep).T), axis=1)
+catalog_vele = pd.DataFrame(velest, columns=['LAT', 'LON', 'DEPTH'])
 # hypoinverse
-catalog_hypoinverse = pd.read_csv("../catOut.sum", sep="\s+")
+catalog_hypoinverse = pd.read_csv("../hypoinverse/catOut.sum", sep="\s+")
 catalog_hypoinverse["time"] = (catalog_hypoinverse['DATE']+catalog_hypoinverse["TIME"]).apply(lambda x: datetime.strptime(x, "%Y/%m/%d%H:%M"))
 # NLL
 f = open('../NLL/loc/ridgecrest.sum.grid0.loc.arc', 'r')
@@ -43,16 +54,19 @@ for line in Lines:
         nll_lat.append(float(line[16:18])+float(line[19:23])/6000.)
         nll_lon.append(-(float(line[23:26])+float(line[27:31])/6000.))
         nll_dep.append(float(line[32:36])/100.)
-
+# for xcorloc
+catalog_xcloc = pd.read_csv(f"../xcorloc/out.loc_xcor", sep="\s+", names=["qID", "yr","mon","day", "hr","min","sec","lat","lon","dep","mag","pair", "pick_used", "erx", "ery", "erz", "ert", "rms_phs", "rms_dif", "type"])
+# for hyposvi
+catalog_hyposvi = pd.read_csv(f"../hyposvi/data/catalog_svi9.csv_svi")
 
 
 # profile
 fig = plt.figure(figsize=[9,4], constrained_layout=True)
-gs = gridspec.GridSpec(2, 3, figure=fig, hspace=0.001)
+gs = gridspec.GridSpec(2, 4, figure=fig, hspace=0.001)
 
 map_dist = [0, 90]
 map_dep = [15, 0]
-size = 0.5
+size = 0.2
 title_fontsize = 8
 
 # original distribution
@@ -149,5 +163,36 @@ ax.xaxis.set_tick_params(labelsize=6)
 ax.axes.get_xaxis().set_ticklabels([])
 ax.axes.get_yaxis().set_ticklabels([])
 
-plt.savefig('./profile.png', transparent=True, dpi=300)
+# Xcor loc
+ax = fig.add_subplot(gs[0,3])
+ax.set_title('XCorLoc',fontsize=title_fontsize, fontweight="bold")
+for i in range(0, len(catalog_xcloc)):
+    dist = project_profile(catalog_xcloc.iloc[i]['lat'], catalog_xcloc.iloc[i]['lon'])
+    ax.scatter(dist, catalog_xcloc.iloc[i]['dep'], s=size, c='k')
+ax.set_xlim(map_dist)
+ax.set_ylim(map_dep)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(20))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+ax.yaxis.set_tick_params(labelsize=6)
+ax.xaxis.set_tick_params(labelsize=6)
+ax.axes.get_xaxis().set_ticklabels([])
+ax.axes.get_yaxis().set_ticklabels([])
+
+# HypoSVI
+ax = fig.add_subplot(gs[1,3])
+ax.set_title('HypoSVI',fontsize=title_fontsize, fontweight="bold")
+for i in range(0, len(catalog_hyposvi)):
+    dist = project_profile(catalog_hyposvi.iloc[i]['latitude'], catalog_hyposvi.iloc[i]['longitude'])
+    ax.scatter(dist, catalog_hyposvi.iloc[i]['depth'], s=size, c='k')
+ax.set_xlim(map_dist)
+ax.set_ylim(map_dep)
+ax.xaxis.set_major_locator(ticker.MultipleLocator(20))
+ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+ax.yaxis.set_tick_params(labelsize=6)
+ax.xaxis.set_tick_params(labelsize=6)
+ax.axes.get_xaxis().set_ticklabels([])
+ax.axes.get_yaxis().set_ticklabels([])
+
+plt.savefig('./profile.png', dpi=300)
+#plt.savefig('./profile.png', transparent=True, dpi=300)
 plt.close()

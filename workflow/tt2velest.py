@@ -27,6 +27,8 @@ f = open('./velest.cnv', 'w+')
 sources = np.load('o_source.npy')
 tt_p = np.load('tt_P.npy')
 tt_s = np.load('tt_S.npy')
+out_list = open('./outlier_list.txt','w')
+out_list.write('event_num sta_num phase\n')
 for i in range(0, len(sources)):
     if i > 0:
         f.write('\n')
@@ -50,7 +52,13 @@ for i in range(0, len(sources)):
         if prob < p_prob:
             count += 1
             tt = tt_p[i,j] + np.random.laplace(0, 0.02,)# long tail==double exponential?
+            prob_outlier = np.random.rand()
+            outlier_p = 0.01
+            if prob_outlier < outlier_p:
+                tt = tt + np.random.rand() * 0.6 + 0.4
+                out_list.write(f'{i} {j} P\n')
             f.write(f"{sta.ljust(4,' ')}P0 {tt:5.2f}")
+
         if count == 6:
             count = 0
             f.write('\n')
@@ -59,6 +67,11 @@ for i in range(0, len(sources)):
         if prob < s_prob:
             count += 1
             tt = tt_s[i,j] + np.random.laplace(0, 0.04,)
+            prob_outlier = np.random.rand()
+            outlier_s = 0.04
+            if prob_outlier < outlier_s:
+                tt = tt + np.random.rand() + 0.4
+                out_list.write(f'{i} {j} S\n')
             f.write(f"{sta.ljust(4,' ')}S0 {tt:5.2f}")
         if count == 6:
             count = 0
