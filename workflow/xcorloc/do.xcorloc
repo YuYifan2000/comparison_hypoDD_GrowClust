@@ -1,0 +1,34 @@
+#!/bin/tcsh
+
+
+rm -f out.loc_starting*
+rm -f out.loc_xcor*
+~/opt/XCORLOC_1.0/SRC/xcorloc << !
+tt.pg
+tt.sg
+stlist.in
+0                                               !(0) normal  or  (1) fixed loc kluge
+3                                               !(1) L1,  (2) L2 or (3) ROBUST MEAN
+0                                               !(0) no shift (1) shift
+-999. 999. -999. 999. -999. 999.                !qlatmin,qlatmax,qlonmin,qlonmax,qdepmin,qdepmax
+none
+2                                               !1=evlist locations, 2=phase relocation
+evlist.in
+120.                                            !max range
+none
+5                                               !number of iterations for static station terms
+10                                              !number of iterations for ssst
+3300 50.                                        !starting nmed, dmax for SSST
+20 5.                                           !ending nmed, dmax for SSST
+0.25                                            !xcormin to use differential time (e.g. 0.60)
+0.6                                             !xcormin for ngood count (e.g. 0.65)
+4                                               !ngood min to use event pair
+./
+./filelist.out
+out.loc_starting
+out.loc_xcor
+10                                               !iteration number
+5                                               !iterations for bootstrap resampling
+0.001                                           !rmscut to stop iterations
+!
+

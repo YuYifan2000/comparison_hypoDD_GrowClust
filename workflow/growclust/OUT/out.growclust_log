@@ -1,0 +1,51 @@
+********************** Input Parameters ***********************
+     control file:   gc.inp
+       event list:   evlist.txt
+     station list:   station.dat
+     xcordat file:   dt.cc
+  travel time src:   trace
+     velocity mdl:   vzmodel.txt
+   map projection:   tmerc WGS84 -118.000000 35.200000 0.00
+
+************************ Output files *************************
+     catalog file:   out.growclust_cat
+     cluster file:   OUT/out.growclust_clust
+         log file:   OUT/out.growclust_log
+   bootstrap file:   NONE
+
+****************** GROWCLUST Run Parameters *******************
+  (min rxcor value for evpair similarity coeff.): rmin =   0.75
+  (max sta. dist for evpair similarity coeff.): delmax =   80.0
+           (max rms residual to join clusters): rmsmax =   0.20
+        (num. bootstrap uncertainty iterations): nboot =      0
+
+****************** Auxiliary Run Parameters *******************
+                     max catalog dist to join clusters:    8.00
+                   max relocated dist to join clusters:    6.00
+               max permitted horizontal cluster shifts:    2.00
+                 max permitted vertical cluster shifts:    2.00
+         max median absolute residual to join clusters:    0.10
+***************************************************************
+
+==================================================================
+==================================================================
+
+********************  GROWCLUST Run Summary  *********************
+                             Number of catalog events:        1000
+                           Number of relocated events:         998
+                          Number of input event pairs:       12387
+                           Number of event pairs used:       12387
+                Number of xcor data used (total, P+S):      222499
+                   Number of xcor data used (P-phase):      143076
+             RMS differential time residual (P-phase):      0.0390
+   Mean (signed) differential time residual (P-phase):     -0.0007
+                   Number of xcor data used (S-phase):       79423
+             RMS differential time residual (S-phase):      0.0603
+   Mean (signed) differential time residual (S-phase):     -0.0007
+
+                Number of clusters with >=   2 events:          8
+                Number of clusters with >=   5 events:          8
+                Number of clusters with >=  10 events:          8
+                Number of clusters with >=  20 events:          7
+                Number of clusters with >=  50 events:          6
+                Number of clusters with >= 100 events:          4

@@ -1,0 +1,107 @@
+******* CONTROL-FILE FOR PROGRAM  V E L E S T  (28-SEPT1993) *******
+***
+*** ( all lines starting with  *  are ignored! )
+*** ( where no filename is specified, 
+***   leave the line BLANK. Do NOT delete!)
+***
+*** next line contains a title (printed on output):
+Ridgecrest Synthetic Test Y.Y.
+***      starting model 1.1 based on Castillo and Ellsworth 1993, JGR
+***  olat       olon   icoordsystem      zshift   itrial ztrial    ised
+  35.4     118.0      0            0.000      0     0.00       0
+***
+*** neqs   nshot   rotate
+     1000      0      0.0
+***
+*** isingle   iresolcalc
+       0          1
+***
+*** dmax    itopo    zmin     veladj    zadj   lowveloclay
+   200.0     0       0.05       0.20    5.00       0
+***
+*** nsp    swtfac   vpvs       nmod
+     2      0.70    1.73        2
+***
+***   othet   xythet    zthet    vthet   stathet
+      0.01    0.01      0.01     10.     0.1
+***
+*** nsinv   nshcor   nshfix     iuseelev    iusestacorr
+       1       0       0           0            0
+***
+*** iturbo    icnvout   istaout   ismpout
+       1         1         1         0
+***
+*** irayout   idrvout   ialeout   idspout   irflout   irfrout   iresout
+       0         0         0         0         0         0         0
+***
+*** delmin   ittmax   invertratio
+    0.010      30          3
+***
+*** Modelfile:
+velest.mod
+***
+*** Stationfile:
+velest.sta
+***
+*** Seismofile:
+                                                                                
+***
+*** File with region names:
+
+***
+*** File with region coordinates:
+
+***
+*** File #1 with topo data:
+                                                                                
+***
+*** File #2 with topo data:
+                                                                                
+***
+*** DATA INPUT files:
+***
+*** File with Earthquake data:
+../hypocenter.CNV
+***
+*** File with Shot data:
+                                                                                
+***
+*** OUTPUT files:
+***
+*** Main print output file:
+velest.OUT
+***
+*** File with single event locations:
+
+***
+*** File with final hypocenters in *.cnv format:
+hypocenter_.CNV
+***
+*** File with new station corrections:
+sta.OUT
+***
+*** File with summary cards (e.g. for plotting):
+bv.summary
+***
+*** File with raypoints:
+
+***
+*** File with derivatives:
+
+***
+*** File with ALEs:
+
+***
+*** File with Dirichlet spreads:
+CALDIRSPRED.DIS
+***
+*** File with reflection points:
+
+***
+*** File with refraction points:
+
+***
+*** File with residuals:
+
+***
+******* END OF THE CONTROL-FILE FOR PROGRAM  V E L E S T  *******
