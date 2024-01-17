@@ -11,4 +11,4 @@ velest.pha
 *MINOBS: min. number of links per pair saved [8]
 *MAXOBS: max. number of links per pair saved [20]
 *MINWGHT MAXDIST MAXSEP MAXNGH MINLNK MINOBS MAXOBS
-   0      200     10     20      8      8     20
+   0      200     40     65      8      8     40

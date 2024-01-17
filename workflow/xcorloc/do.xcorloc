@@ -27,8 +27,8 @@ none
 ./filelist.out
 out.loc_starting
 out.loc_xcor
-10                                               !iteration number
+20                                               !iteration number
 5                                               !iterations for bootstrap resampling
-0.001                                           !rmscut to stop iterations
+0.0001                                           !rmscut to stop iterations
 !
 

@@ -31,7 +31,7 @@ for line in Lines:
             phase = tmp[4]
             travel_time = tmp.split()[-1]
             time = eventtime + timedelta(seconds=float(travel_time))
-            output.write(f'{sta.ljust(6," ")} ?    ?    ? {phase}      ? {time.strftime("%Y%m%d")} {time.strftime("%H%M")}   {time.strftime("%S.%f")[:-2]} GAU  2.00e-02 -1.00e+00 -1.00e+00 -1.00e+00\n')
+            output.write(f'{sta.ljust(6," ")} ?    ?    ? {phase}      ? {time.strftime("%Y%m%d")} {time.strftime("%H%M")}   {time.strftime("%S.%f")[:-2]} GAU  4.00e-02 -1.00e+00 -1.00e+00 -1.00e+00\n')
 
 output.close()
 # form station.dat
@@ -44,6 +44,7 @@ for i in range(0, num_sta):
     sta = 'ST' + str(i)
     lat = stas[i,0]
     lon = stas[i,1]
-    line = f"GTSRCE  {sta}  LATLON  {lat:7.4f}  {lon:8.4f}  0  0.0"
+    ele = stas[i,2]
+    line = f"GTSRCE  {sta}  LATLON  {lat:7.4f}  {lon:8.4f}  0  {ele/1000.:.2f}"
     f.write(line+'\n')
 f.close()

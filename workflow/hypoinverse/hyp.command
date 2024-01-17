@@ -6,7 +6,8 @@
 H71 3 1 3               /use new hypoinverse station format
 DIS 4 50 1 3            /Main Distance weighting
 RMS 4 0.16 1.5 3        /Residual weighting
-ERR .10
+ERR .04
+ERC 0
 *POS 1.8
 MIN 5                  /min number of stations
 ZTR 8                  /trial depth

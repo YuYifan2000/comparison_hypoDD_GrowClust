@@ -2,7 +2,7 @@
 #SBATCH --job-name=nll
 #SBATCH --output=%j.out
 #SBATCH --error=%j.err
-#SBATCH --time=2:00:00
+#SBATCH --time=4:00:00
 #SBATCH -p serc
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
@@ -12,6 +12,6 @@ rm model/*
 rm time/*
 rm loc/*
 Vel2Grid ./nlloc_sample.in
-srun Grid2Time ./nlloc_sample.in
-srun Grid2Time ./nlloc_sample.in_S
-srun NLLoc ./nlloc_sample.in
+Grid2Time ./nlloc_sample.in
+Grid2Time ./nlloc_sample.in_S
+NLLoc ./nlloc_sample.in

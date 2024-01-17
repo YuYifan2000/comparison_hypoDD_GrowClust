@@ -10,7 +10,7 @@ rank = comm.Get_rank()
 size = comm.Get_size()
 
 # set up basic parameters
-nz = 401
+nz = 441
 nx = 701
 ny = 1001
 dx = 100
@@ -20,8 +20,11 @@ dy = 100
 print(f'Grid Range: in x direction {(nx-1)*dx} km, in y direction {(ny-1)*dy} km, in z direction {(nz-1)*dz} km')
 
 # load or build up velocity
-p_vel_structure = np.load('p_vel.npy')
-s_vel_structure = np.load('s_vel.npy')
+p_vel_structure = np.load('vk_ele_vel_p.npy')
+s_vel_structure = np.load('vk_ele_vel_s.npy')
+
+# import above ground point
+air = np.load('air.npy')
 
 # set up stations
 stations = np.load('station.npy')
@@ -37,7 +40,7 @@ if rank == 0:
     o_stations = []
     for station in stations:
         lat, lon, _ = pm.enu2geodetic(station[0], station[1], 0, o_lat, o_lon,0)
-        o_stations.append([lat,lon])
+        o_stations.append([lat,lon,station[2]])
     np.save('o_station', np.array(o_stations))
 
 
@@ -51,12 +54,15 @@ for i in range(0, len(sources)):
     solver.velocity.node_intervals = dx, dy, dz
     solver.velocity.npts = nx, ny, nz
     solver.velocity.values = p_vel_structure
-    src_idx = int(sources[i,0]/dx), int(sources[i,1]/dy), int(sources[i,2]/dz)
+    src_idx = int(sources[i,0]/dx), int(sources[i,1]/dy), int(sources[i,2]/dz+40)
     solver.traveltime.values[src_idx] = 0
     solver.unknown[src_idx] = False
     solver.trial.push(*src_idx)
+    for point in air:
+        solver.known[tuple(point[:3].astype('int'))] = True
+#        solver.traveltime.values[tuple(point)] = 999
     solver.solve()
-    tp = solver.traveltime.values[:,:, 0].copy()
+    tp = solver.traveltime.values[:,:,0:40].copy()
     del solver
     gc.collect()
     solver = pykonal.EikonalSolver(coord_sys="cartesian")
@@ -64,16 +70,19 @@ for i in range(0, len(sources)):
     solver.velocity.node_intervals = dx, dy, dz
     solver.velocity.npts = nx, ny, nz
     solver.velocity.values = s_vel_structure
-    src_idx = int(sources[i,0]/dx), int(sources[i,1]/dy), int(sources[i,2]/dz)
+    src_idx = int(sources[i,0]/dx), int(sources[i,1]/dy), int(sources[i,2]/dz+40)
     solver.traveltime.values[src_idx] = 0
     solver.unknown[src_idx] = False
     solver.trial.push(*src_idx)
+    for point in air:
+        solver.known[tuple(point[:3].astype('int'))] = True
+#        solver.traveltime.values[tuple(point)] = 999
     solver.solve()
-    ts = solver.traveltime.values[:,:, 0].copy()
+    ts = solver.traveltime.values[:,:, 0:40].copy()
     print(rank,'consumes',time.time()-st)
     for j in range(0, len(stations)):
-        p_time_table[i][j] = tp[int(stations[j][0]/dx), int(stations[j][1]/dy)]
-        s_time_table[i][j] = ts[int(stations[j][0]/dx), int(stations[j][1]/dy)]
+        p_time_table[i][j] = tp[int(stations[j][0]/dx), int(stations[j][1]/dy), 41-int(stations[j][2]/dz)]
+        s_time_table[i][j] = ts[int(stations[j][0]/dx), int(stations[j][1]/dy), 41-int(stations[j][2]/dz)]
 
 comm.barrier()
 #mpi gather time table

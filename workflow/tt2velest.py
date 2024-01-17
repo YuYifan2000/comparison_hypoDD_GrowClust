@@ -3,6 +3,8 @@ import numpy as np
 np.random.seed(1)
 p_prob = 0.67
 s_prob = 0.5
+outlier_p = 0.01
+outlier_s = 0.04
 # station - file
 f = open('./velest.sta', 'w+')
 f.write('(a4,f7.4,a1,1x,f8.4,a1,1x,i4,1x,i1,1x,i3,1x,f5.2,2x,f5.2)\n')
@@ -13,7 +15,7 @@ for i in range(0, num_sta):
     sta = 'ST' + str(i)
     lat = stas[i,0]
     lon = abs(stas[i,1])
-    ele = 0.0
+    ele = stas[i,2]
     pdelay = 0.00
     sdelay = 0.00
     imod = 1
@@ -29,7 +31,7 @@ tt_p = np.load('tt_P.npy')
 tt_s = np.load('tt_S.npy')
 out_list = open('./outlier_list.txt','w')
 out_list.write('event_num sta_num phase\n')
-for i in range(0, len(sources)):
+for i in range(0, 1000):
     if i > 0:
         f.write('\n')
     year = '2000'
@@ -53,7 +55,6 @@ for i in range(0, len(sources)):
             count += 1
             tt = tt_p[i,j] + np.random.laplace(0, 0.02,)# long tail==double exponential?
             prob_outlier = np.random.rand()
-            outlier_p = 0.01
             if prob_outlier < outlier_p:
                 tt = tt + np.random.rand() * 0.6 + 0.4
                 out_list.write(f'{i} {j} P\n')
@@ -68,7 +69,6 @@ for i in range(0, len(sources)):
             count += 1
             tt = tt_s[i,j] + np.random.laplace(0, 0.04,)
             prob_outlier = np.random.rand()
-            outlier_s = 0.04
             if prob_outlier < outlier_s:
                 tt = tt + np.random.rand() + 0.4
                 out_list.write(f'{i} {j} S\n')

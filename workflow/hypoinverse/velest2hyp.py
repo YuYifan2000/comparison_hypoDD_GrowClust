@@ -65,6 +65,6 @@ for i in range(0, num_sta):
     lng_degree, lng_minute = decdeg2dms(abs(stas[i,1]))
     west = "W"
     north = "N"
-    elevation = 0.
+    elevation = stas[i,2]
     f.write(f'{sta:<5} {network_code:<2} {comp_code[:-1]:<1}{channel_code:<3} {station_weight}{abs(lat_degree):2.0f} {abs(lat_minute):7.4f}{north}{abs(lng_degree):3.0f} {abs(lng_minute):7.4f}{west}{elevation:4.0f}\n')
 f.close()

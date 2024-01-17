@@ -34,7 +34,7 @@ for line in Lines:
 output.close()
 
 # form station.dat
-f = open('../station.dat', 'w+')
+f = open('./station.dat', 'w+')
 stas = np.load('../o_station.npy')
 num_sta = len(stas)
 for i in range(0, num_sta):
