@@ -1,0 +1,62 @@
+CONTROL 1 54321
+
+#TRANS SIMPLE  34.8 -118.5 0
+TRANS AZIMUTHAL_EQUIDIST WGS-84 35.8 -117.6 0
+
+VGOUT  ./model/layer
+VGTYPE P
+VGTYPE S
+VGGRID  2 18001 2201  0.0 0.0 -2.0  0.01 0.01 0.01  SLOW_LEN 
+LAYER    0.0     4.746   0    2.469   0    2.52    0
+LAYER    1.0     4.793   0    2.470   0    2.55    0
+LAYER    2.0     4.799   0    2.929   0    2.58    0
+LAYER    3.0     5.045   0    2.930   0    2.60    0
+LAYER    4.0     5.721   0    3.402   0    2.61    0
+LAYER    5.0     5.879   0    3.403   0    2.63    0
+LAYER    6.0     6.504   0    3.848   0    2.69    0
+LAYER    7.0     6.708   0    3.907   0    2.72    0
+LAYER    8.0     6.725   0    3.963   0    2.76    0
+LAYER    30.0    7.80    0    4.50    0    3.26    0
+
+GTFILES  ./model/layer  ./time/layer P	  # uncomment to generate P travel times
+#GTFILES  ./model/layer  ./time/layer S	 # uncomment to generate S travel times
+
+GTMODE GRID2D ANGLES_NO
+
+INCLUDE obs/station_coordinates.txt		# include file with STSRCE statements, this line can be placed anywhere in control file
+
+GT_PLFD  1.0e-3  0
+
+LOCSIG NonLinLoc - Anthony Lomax (Yifan Yu)
+
+LOCCOM 2023-10-4 test
+
+LOCFILES ./obs/phase.obs NLLOC_OBS  ./time/layer  ./loc_ALomax/ridgecrest
+
+
+#LOCHYPOUT SAVE_HYPOINVERSE_Y2000_ARC
+#LOCHYPOUT SAVE_HYPOINV_SUM
+LOCHYPOUT SAVE_NLLOC_ALL
+
+LOCSEARCH  OCT 40 40 8 0.01 25000 5000 0 1
+LOCGRID  101 101 21  -50.0 -50.0 0.0  1.0 1.0 1.0   PROB_DENSITY  SAVE
+
+# LOCMETH method maxDistStaGrid minNumberPhases maxNumberPhases minNumberSphases VpVsRatio maxNum3DGridMemory minDistStaGrid iRejectDuplicateArrivals
+#LOCMETH GAU_ANALYTIC 9999.0 1 -1 -1 -1.0 -1 1.0 1
+LOCMETH EDT_OT_WT 9999.0 1 -1 -1 -1.0 -1 1.0 1
+
+
+LOCGAU 1.0 0.0
+
+LOCGAU2 0.02 0.05 2.0
+
+#LOCPHASEID  P   P p Pn Pg
+#LOCPHASEID  S   S s Sn Sg
+
+LOCQUAL2ERR 0.1 0.5 1.0 2.0 99999.9
+LOCANGLES ANGLES_YES 5
+
+# LOCPHSTAT RMS_Max NRdgs_Min Gap_Max P_ResidualMax S_ResidualMax Ell_Len3_Max Hypo_Depth_Min Hypo_Depth_Max Hypo_Dist_Max
+LOCPHSTAT 9999.0 -1 9999.0 1.0 1.0 9999.9 -9999.9 9999.9
+
+

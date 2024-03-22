@@ -1,0 +1,17 @@
+{
+"station_file": "/scratch/users/yuyifan/n_ele/hyposvi/data/station.csv",
+"velmod_file": "/scratch/users/yuyifan/n_ele/hyposvi/data/vel.csv",
+"lon_min": -118.20,
+"lon_max": -117.10,
+"lat_min": 35.3,
+"lat_max": 36.4,
+"z_min": 0.0,
+"z_max": 25.0,
+"model_file": "/scratch/users/yuyifan/n_ele/hyposvi/data/model.jld2",
+"batch_size": 256,
+"n_train": 10000,
+"n_test": 10000,
+"n_epochs": 100,
+"lr": 1e-3
+}
+
