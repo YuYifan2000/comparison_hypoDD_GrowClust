@@ -14,7 +14,7 @@ Ridgecrest Synthetic Test Y.Y.
      1000      0      0.0
 ***
 *** isingle   iresolcalc
-       0          1
+       0          0
 ***
 *** dmax    itopo    zmin     veladj    zadj   lowveloclay
    200.0     0       0.05       0.20    5.00       0
@@ -35,7 +35,7 @@ Ridgecrest Synthetic Test Y.Y.
        0         0         0         0         0         0         0
 ***
 *** delmin   ittmax   invertratio
-    0.010      30          3
+    0.010      30          5
 ***
 *** Modelfile:
 velest.mod
@@ -47,10 +47,10 @@ velest.sta
                                                                                 
 ***
 *** File with region names:
-
+regionsnamen.dat
 ***
 *** File with region coordinates:
-
+regionskoord.dat
 ***
 *** File #1 with topo data:
                                                                                 
@@ -72,7 +72,7 @@ velest.sta
 velest.OUT
 ***
 *** File with single event locations:
-
+sin.cnv
 ***
 *** File with final hypocenters in *.cnv format:
 hypocenter_.CNV

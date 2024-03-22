@@ -1,4 +1,4 @@
- CALAVERAS1D-modell (mod1.1 EK280993)   Ref. station HGSM      
+ David Shelly 2020 Ridgecrest velocity
  10        vel,depth,vdamp,phase (f5.2,5x,f7.2,2x,f7.3,3x,a1)
  4.74        0.0    001.00
  5.01        1.0    001.00

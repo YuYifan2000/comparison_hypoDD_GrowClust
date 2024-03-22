@@ -61,7 +61,7 @@ tmerc WGS84 -118.0000 35.2000 0.0
 ************ Output files ****************
 ******************************************
 * nboot  nbranch_min
-   20         1
+   100         1
 * fout_cat (relocated catalog)
 out.growclust_cat
 * fout_clust (relocated cluster file)
