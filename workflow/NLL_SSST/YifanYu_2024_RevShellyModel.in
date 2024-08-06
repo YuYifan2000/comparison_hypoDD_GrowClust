@@ -1,0 +1,71 @@
+CONTROL 1 54321
+
+#TRANS SIMPLE  34.8 -118.5 0
+TRANS AZIMUTHAL_EQUIDIST WGS-84 35.8 -117.6 0
+
+VGOUT  out/RevShellyModel/model/RevShellyModel
+VGTYPE P
+VGTYPE S
+#VGGRID  2 18001 2201  0.0 0.0 -2.0  0.01 0.01 0.01  SLOW_LEN 
+VGGRID  2 1801 221  0.0 0.0 -2.0  0.1 0.1 0.1  SLOW_LEN 
+
+# Revised Shelly 2020 Ridgecrest region        https://github.com/YuYifan2000/comparison_hypoDD_GrowClust/blob/main/workflow/velest/velest.mod      
+#LAYER  depth  Vp_top  Vp_grad  Vs_top  Vs_grad  p_top  p_grad
+LAYER  0  4.746  0  2.469  0  2.52  0
+LAYER  1  4.793  0  2.47  0  2.52  0
+LAYER  2  4.799  0  2.929  0  2.52  0
+LAYER  3  5.045  0  2.93  0  2.52  0
+LAYER  4  5.721  0  3.402  0  2.52  0
+LAYER  5  5.879  0  3.403  0  2.52  0
+LAYER  6  6.504  0  3.848  0  2.52  0
+LAYER  7  6.708  0  3.907  0  2.52  0
+LAYER  8  6.725  0  3.963  0  2.52  0
+LAYER  30  7.8  0  4.5  0  2.52  0
+
+#GTFILES  out/RevShellyModel/model/RevShellyModel  out/RevShellyModel/time/RevShellyModel P    # uncomment to generate P travel times
+GTFILES  out/RevShellyModel/model/RevShellyModel  out/RevShellyModel/time/RevShellyModel S   # uncomment to generate S travel times
+
+GTMODE GRID2D ANGLES_YES
+
+INCLUDE obs/station_coordinates.txt    # include file with STSRCE statements, this line can be placed anywhere in control file
+
+GT_PLFD  1.0e-3  0
+
+LOCSIG NonLinLoc - Anthony Lomax (Yifan Yu)
+
+LOCCOM RevShellyModel
+
+LOCFILES ./obs/phase.obs NLLOC_OBS  out/RevShellyModel/time/RevShellyModel  out/RevShellyModel/loc/ridgecrest
+# following uses custom LOCQUAL2ERR to provide P and S pick uncertainties
+#locPS#LOCFILES ./obs/phase_errPS.obs NLLOC_OBS  out/RevShellyModel/time/RevShellyModel  out/RevShellyModel/locPS/ridgecrest
+#locPS#LOCQUAL2ERR 0.02 0.04
+
+
+#LOCHYPOUT SAVE_HYPOINVERSE_Y2000_ARC
+#LOCHYPOUT SAVE_HYPOINV_SUM
+LOCHYPOUT SAVE_NLLOC_ALL
+
+LOCSEARCH  OCT 40 40 8 0.01 50000 5000 0 1
+LOCGRID  101 101 21  -50.0 -50.0 0.0  1.0 1.0 1.0   PROB_DENSITY  SAVE
+
+# LOCMETH method maxDistStaGrid minNumberPhases maxNumberPhases minNumberSphases VpVsRatio maxNum3DGridMemory minDistStaGrid iRejectDuplicateArrivals
+#LOCMETH GAU_ANALYTIC 9999.0 1 -1 -1 -1.0 -1 1.0 1
+LOCMETH EDT_OT_WT 9999.0 1 -1 -1 -1.0 -1 -1 1
+
+
+LOCGAU 1.0 0.0
+
+LOCGAU2 0.02 0.05 2.0
+
+#LOCPHASEID  P   P p Pn Pg
+#LOCPHASEID  S   S s Sn Sg
+
+#locPS#
+LOCQUAL2ERR 0.1 0.5 1.0 2.0 99999.9
+
+LOCANGLES ANGLES_YES 5
+
+
+LOCPHSTAT 9999.0 -1 9999.0 1.0 1.0 9999.9 -9999.9 9999.9
+
+
