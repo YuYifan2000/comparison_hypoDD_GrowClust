@@ -55,7 +55,7 @@ for line in Lines:
 		st = line.split()[0]
 		idx = int(st.strip('ST'))
 		phase = line.split()[-1]
-		time = line.split()[1]
+		time = str(-float(line.split()[1]))
 		value = line.split()[2]
 		sta_lat = float(st_list[idx].split()[2])
 		sta_lon = float(st_list[idx].split()[3])

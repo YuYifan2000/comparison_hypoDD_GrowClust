@@ -29,10 +29,13 @@ After running all these programs, I do have some experience to share:\
 HypoDD: 
 * While the LSQR mode's error output are dominated by the damping factor, running the SVD mode with small set of data should be considered. From the source code of HypoDD.f line 16, the factor should be 2.7955 to get 95% confidence errors.
 
+XCORLOC:
+* The differential time used in XCORLOC is 't2-t1' or the '21' mode in Growclust, which is not the negative of HypoDD format.
+
 VELEST:
 * Another independent run of single event location calculating resolution matrix with zero updating iteration after the location should be used for error output. That is set 'isingle=1', 'iresolcalc=1', 'ittmax=0' for error output.
 
-NonLinLoc and NonLinLoc_SSST
+NonLinLoc and NonLinLoc_SSST:
 * The control files I shared in this repo are by courtesy of Anthony Lomax. There are plenty of parameters and options to choose, I believe his scripts in this repo serve as an example for users to learn, especially NonLinLoc_SSST.
 
 HypoSVI
