@@ -13,16 +13,21 @@ for line in Lines:
             flag = 1
         south = ' '
         east = ' '
-        hour = line.split()[1]
-        sec = line.split()[2]
-        event_time = datetime.strptime(f'2000-12-13-{hour}T{sec}', '%Y-%m-%d-%H%MT%S.%f')
-        lat = float(line.split()[3][:-1])
+        date = line[0:6]
+        year = 2000 + int(date[:2].strip())
+        month = int(date[2:4].strip())
+        day = int(date[-2:].strip())
+        hour = int(line[7:9])
+        minute = int(line[9:11])
+        sec = float(line[12:17])
+        event_time = datetime.strptime(f'{year}-{month}-{day}-{hour}T{minute}:{sec}', '%Y-%m-%d-%HT%M:%S.%f')
+        lat = float(line[18:26][:-1])
         lat_degree = int(lat)
         lat_min = (lat-lat_degree)*60*100
-        lon = float(line.split()[4][:-1])
+        lon = float(line[27:36][:-1])
         lon_degree = int(lon)
         lon_min = (lon-lon_degree)*60*100
-        depth = float(line.split()[5]) * 100.
+        depth = float(line[39:44]) * 100.
         event_line = f"{event_time.strftime('%Y%m%d%H%M%S%f')[:-4]}{abs(lat_degree):2d}{south}{lat_min:4.0f}{abs(lon_degree):3d}{east}{abs(lon_min):4.0f}{depth:5.0f}"
         out_file.write(event_line + "\n")
     else:

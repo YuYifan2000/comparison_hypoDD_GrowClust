@@ -12,7 +12,7 @@ for i in contents:
 	mo = (int(content[0])%10000)//100
 	day = (int(content[0])%10000)%100
 	hr = int(content[1])//1000000
-	min = (int(content[1])%100000)//10000
+	min = (int(content[1])%1000000)//10000
 	sec = float((int(content[1])%100000)%10000)/100.
 	la = content[2]
 	lo = content[3]

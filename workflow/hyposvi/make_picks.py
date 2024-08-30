@@ -37,14 +37,14 @@ for line in Lines:
         tmp = line[7:11]
         hour = int(tmp[:2])
 #        min = int(tmp[2:4])
-        min = 0
+        min = 10
         sec = float(line[12:17])
         eventtime = datetime.strptime(f'{year},{mon},{day}T{hour}:{min}:{sec}', '%Y,%m,%dT%H:%M:%S.%f')
-        eventtime = eventtime + timedelta(minutes=idx)
+#        eventtime = eventtime + timedelta(minutes=idx)
         phase_count = 0
-        latitude = line.split()[3].strip('N')
-        longitude = line.split()[4].strip('W')
-        depth = line.split()[5]
+        latitude = float(line[18:26][:-1])
+        longitude = float(line[27:36][:-1])
+        depth = float(line[39:44])
         mag = 1.0
         cat.write(f'{idx},{latitude},-{longitude},{depth},{eventtime.strftime("%Y-%m-%dT%H:%M:%S.%f")},{mag}\n')
     else:

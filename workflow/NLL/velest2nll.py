@@ -18,10 +18,10 @@ for line in Lines:
         tmp = line[7:11]
         hour = int(tmp[:2])
 #        min = int(tmp[2:4])
-        min = 0
+        min = 10
         sec = float(line[12:17])
         eventtime = datetime.strptime(f'{year},{mon},{day}T{hour}:{min}:{sec}', '%Y,%m,%dT%H:%M:%S.%f')
-        eventtime = eventtime + timedelta(minutes=idx)
+#        eventtime = eventtime + timedelta(minutes=idx)
         output.write('\n')
     else:
         length = len(line)
@@ -35,6 +35,7 @@ for line in Lines:
 
 output.close()
 # form station.dat
+
 f = open('./obs/station_coordinates.txt', 'w+')
 
 f.write('#GTSRCE  label  type  lat  lon  z_srce  elev\n')
