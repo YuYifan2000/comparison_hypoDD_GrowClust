@@ -1,4 +1,9 @@
 import numpy as np
+def generate_outlier(start, end):
+    num = np.random.uniform(-end, end)
+    while -start <= num <= start:
+        num = np.random.uniform(-end, end)
+    return num
 np.random.seed(1)
 outlier_p = 0.005
 outlier_s = 0.02
@@ -25,16 +30,16 @@ for line in Lines:
             if phase_type == 'P':
                 p_outlier_prob = np.random.rand()
                 if p_outlier_prob < outlier_p:
-                    output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)) + np.random.rand()/4:4.3f} 1.00 {phase_type} \n')
+                    output.write(f'{content[0]} {round( (tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)) + generate_outlier(0, 0.4), 3):4.3f} 1.00 {phase_type} \n')
                 else:
-                    output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)):4.3f} 1.00 {phase_type} \n')
+                    output.write(f'{content[0]} {round( (tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)), 3):4.3f} 1.00 {phase_type} \n')
             
             if phase_type == 'S':
                 s_outlier_prob = np.random.rand()
                 if s_outlier_prob < outlier_s:
-                    output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)) + np.random.rand()/2:4.3f} 1.00 {phase_type} \n')
+                    output.write(f'{content[0]} {round( (tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)) + generate_outlier(0, 0.5), 3):4.3f} 1.00 {phase_type} \n')
                 else:
-                    output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)):4.3f} 1.00 {phase_type} \n')
+                    output.write(f'{content[0]} {round( (tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)), 3):4.3f} 1.00 {phase_type} \n')
         else:
             content = line.split()
             station = int(content[0].strip('ST'))
@@ -42,14 +47,14 @@ for line in Lines:
             if phase_type == 'P':
                 p_outlier_prob = np.random.rand()
                 if p_outlier_prob < outlier_p:
-                    output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)) + np.random.rand()/4:4.3f} 0.30 {phase_type} \n')
+                    output.write(f'{content[0]} {round( (tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)) + generate_outlier(0, 0.4), 3):4.3f} 0.30 {phase_type} \n')
                 else:
-                    output.write(f'{content[0]} {(tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)):4.3f} 0.30 {phase_type} \n')
+                    output.write(f'{content[0]} {round( (tt_p[event1-1][station]-tt_p[event2-1][station] + np.random.laplace(0, 0.011,)), 3):4.3f} 0.30 {phase_type} \n')
             if phase_type == 'S':
                 s_outlier_prob = np.random.rand()
                 if s_outlier_prob < outlier_s:
-                    output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)) + np.random.rand()/2:4.3f} 0.30 {phase_type} \n')
+                    output.write(f'{content[0]} {round( (tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)) + generate_outlier(0, 0.5), 3):4.3f} 0.30 {phase_type} \n')
                 else:
-                    output.write(f'{content[0]} {(tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)):4.3f} 0.30 {phase_type} \n')
+                    output.write(f'{content[0]} {round( (tt_s[event1-1][station]-tt_s[event2-1][station]+ np.random.laplace(0, 0.011,)), 3):4.3f}  0.30 {phase_type} \n')
 output.close()
 

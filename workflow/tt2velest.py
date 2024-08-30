@@ -1,4 +1,10 @@
 import numpy as np
+from datetime import datetime, timedelta
+def generate_outlier(start, end):
+    num = np.random.uniform(-end, end)
+    while -start <= num <= start:
+        num = np.random.uniform(-end, end)
+    return num
 
 np.random.seed(1)
 p_prob = 0.67
@@ -31,15 +37,17 @@ tt_p = np.load('tt_P.npy')
 tt_s = np.load('tt_S.npy')
 out_list = open('./outlier_list.txt','w')
 out_list.write('event_num sta_num phase\n')
+start_time = datetime.strptime('2000-12-13T15:10:1', '%Y-%m-%dT%H:%M:%S')
 for i in range(0, 1000):
     if i > 0:
         f.write('\n')
-    year = '2000'
-    mon = '12'
-    day = '13'
-    hour = '15'
-    min = '10'
-    sec = 1.0
+    year = start_time.strftime("%Y")
+    mon = start_time.strftime("%m")
+    day = start_time.strftime("%d")
+    hour = start_time.strftime("%H")
+    min = start_time.strftime("%M")
+    sec = float(start_time.second)
+    start_time = start_time + timedelta(hours=1)
     lat = sources[i, 0]
     lon = abs(sources[i, 1])
     dep = sources[i, 2]
@@ -56,9 +64,9 @@ for i in range(0, 1000):
             tt = tt_p[i,j] + np.random.laplace(0, 0.02,)# long tail==double exponential?
             prob_outlier = np.random.rand()
             if prob_outlier < outlier_p:
-                tt = tt + np.random.rand() * 0.6 + 0.4
+                tt = tt + generate_outlier(0.4, 1)
                 out_list.write(f'{i} {j} P\n')
-            f.write(f"{sta.ljust(4,' ')}P0 {tt:5.2f}")
+            f.write(f"{sta.ljust(4,' ')}P0 {round(tt, 2):5.2f}")
 
         if count == 6:
             count = 0
@@ -70,9 +78,9 @@ for i in range(0, 1000):
             tt = tt_s[i,j] + np.random.laplace(0, 0.04,)
             prob_outlier = np.random.rand()
             if prob_outlier < outlier_s:
-                tt = tt + np.random.rand() + 0.4
+                tt = tt + generate_outlier(0.4, 1.4)
                 out_list.write(f'{i} {j} S\n')
-            f.write(f"{sta.ljust(4,' ')}S0 {tt:5.2f}")
+            f.write(f"{sta.ljust(4,' ')}S0 {round(tt, 2):5.2f}")
         if count == 6:
             count = 0
             f.write('\n')
