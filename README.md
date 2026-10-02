@@ -8,6 +8,11 @@ This is also a good collection of how to prepare and run the mentioned above ear
 
 More detailed information can be found in the 'readme.pdf'. We are going to present this work at the incoming SCEC & AGU meetings.
 
+## a updated table on more location programs
+We are updating this table with more location programs performance. If you are interested in evaluating your location tool, please contact me. (2026-10-02)
+<img width="1197" height="636" alt="Screenshot 2026-10-02 at 10 24 53 AM" src="https://github.com/user-attachments/assets/ec4ddb93-a942-4d68-811e-a53c771327d7" />
+
+
 ## requirement
 1. pykonal the 3D fast marching method to calculate the traveltime
 2. Install the eight earthquake location methods
