@@ -10,7 +10,7 @@ More detailed information can be found in the 'readme.pdf'. We are going to pres
 
 ## a updated table on more location programs
 We are updating this table with more location programs performance. If you are interested in evaluating your location tool, please contact me. (2026-10-02)
-<img width="1197" height="636" alt="Screenshot 2026-10-02 at 10 24 53 AM" src="https://github.com/user-attachments/assets/ec4ddb93-a942-4d68-811e-a53c771327d7" />
+<img width="1042" height="568" alt="Screenshot 2026-10-02 at 10 34 34 AM" src="https://github.com/user-attachments/assets/55281509-c7fa-422b-92ea-648ced697295" />
 
 
 ## requirement
